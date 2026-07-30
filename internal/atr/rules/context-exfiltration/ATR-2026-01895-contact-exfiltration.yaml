@@ -1,0 +1,14 @@
+id: ATR-2026-01895
+title: atr-b64:SW5qZWN0ZWQgQ29kZSDigJQgQ29udGFjdC1MaXN0IEhhcnZlc3QgYW5kIFNNVFAgU3BhbSBFeGZpbHRyYXRpb24=
+description: atr-b64:RGV0ZWN0cyBpbmplY3RlZCBjb2RlIHRoYXQgcmVhZHMgYSBsb2NhbCBjb250YWN0cy5jc3YgYW5kIHVzZXMgU01UUCAoc210cGxpYiAvIHlhZ21haWwpIHRvIGJsYXN0IHJlbW90ZS1mZXRjaGVkIGNvbnRlbnQgdG8gZXZlcnkgY29udGFjdCDigJQgYSB3b3JtL3NwYW0gcHJvcGFnYXRpb24gcHJpbWl0aXZlIHRoYXQgYWxzbyBleGZpbHRyYXRlcyB0aGUgY29udGFjdCBsaXN0Lg==
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: llm_io
+detection:
+  conditions:
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKWNvbnRhY3RzXC5jc3ZbXHNcU117MCwxNjB9KD86c210cGxpYlwufHlhZ21haWxcLnxzZWN1cmVfc210cGxpYlwufFwuc2VuZG1haWxcKHxcLnNlbmRfbWVzc2FnZVwoKQ==
+    description: atr-b64:QklQSUEgY29udGFjdC1leGZpbHRyYXRpb24gaW52YXJpYW50ICMx
+  condition: any

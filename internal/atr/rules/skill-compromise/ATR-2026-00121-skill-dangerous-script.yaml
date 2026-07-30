@@ -1,0 +1,42 @@
+id: ATR-2026-00121
+title: atr-b64:TWFsaWNpb3VzIENvZGUgaW4gU2tpbGwgUGFja2FnZQ==
+description: atr-b64:RGV0ZWN0cyBtYWxpY2lvdXMgY29kZSBwYXR0ZXJucyBpbiBTS0lMTC5tZCBmaWxlcyBhbmQgYXNzb2NpYXRlZCBzY3JpcHRzLiAxMDAlIG9mIGNvbmZpcm1lZCBtYWxpY2lvdXMgc2tpbGxzIGNvbnRhaW4gbWFsaWNpb3VzIGNvZGUgcGF0dGVybnMgKFNueWsgVG94aWNTa2lsbHMsIEZlYiAyMDI2KS4gUmVhbCBjYW1wYWlnbnM6IENsYXdIYXZvYyBkZWxpdmVyZWQgQU1PUyBpbmZvc3RlYWxlciB2aWEgYmFzZTY0LW9iZnVzY2F0ZWQgcGF5bG9hZHM7IHRocmVhdCBhY3RvciAiemF5Y3YiIHB1Ymxpc2hlZCA0MCsgc2tpbGxzIHdpdGggYXV0b21hdGVkIG1hbHdhcmUgZ2VuZXJhdGlvbjsgcGFzc3dvcmQtcHJvdGVjdGVkIFpJUCBldmFzaW9uIGJ5cGFzc2VzIHN0YXRpYyBhbmFseXNpcy4gQ1ZFLTIwMjYtMjUyNTMgKENWU1MgOC44KTogT3BlbkNsYXcgUkNFIHZpYSBhdXRoIHRva2VuIGV4ZmlsdHJhdGlvbiBhZmZlY3RpbmcgNDAsMDAwKyBpbnN0YW5jZXMu
+severity: critical
+tags:
+  category: skill-compromise
+  scan_target: skill
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShldmFsXHMqXCRcKFxzKmVjaG9ccytbIiddW0EtWmEtejAtOSsvPV17MjAsfVsiJ11ccypcfFxzKmJhc2U2NFxzKy1kfGVjaG9ccytbIiddW0EtWmEtejAtOSsvPV17MjAsfVsiJ11ccypcfFxzKmJhc2U2NFxzKygtZHwtLWRlY29kZSlccypcfFxzKihiYXNofHNofHB5dGhvbnxwZXJsKSk=
+    description: atr-b64:QmFzZTY0LW9iZnVzY2F0ZWQgY29tbWFuZCBleGVjdXRpb24gKFNueWsgRTAwNCwgQ2xhd0hhdm9jIHBhdHRlcm4p
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKXVuemlwXHMrKC1bb1BdXHMrWyInXVteIiddK1siJ11ccyt8LiotUFxzK1siJ11bXiInXStbIiddKS4qXC4oemlwfDd6fHJhcik=
+    description: atr-b64:UGFzc3dvcmQtcHJvdGVjdGVkIGFyY2hpdmUgZXZhc2lvbiAoU255ayBUb3hpY1NraWxscyBwYXlsb2FkKQ==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShjdXJsfHdnZXQpXHMrKC1bc1NmTG9dK1xzKykqaHR0cHM/Oi8vKD86XGR7MSwzfVwuXGR7MSwzfVwuXGR7MSwzfVwuXGR7MSwzfXxnbG90XC5pb3xyZW50cnlcLmNvfHBhc3RlYmluXC5jb218cGFzdGVcLmMtbmV0fGhhc3RlYmluXC5jb20pW158XHNdKlxzKlx8XHMqKGJhc2h8c2h8cHl0aG9uWzIzXT98cGVybHxydWJ5KQ==
+    description: atr-b64:UmVtb3RlIGNvZGUgZXhlY3V0aW9uIGZyb20gcmF3IElQIG9yIHBhc3RlIHNlcnZpY2UgKENsYXdIYXZvYyBDMiBwYXR0ZXJuKQ==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShjYXR8aGVhZHx0YWlsfHN0cmluZ3MpXHMrW34kXT9bL1xcXT9cLihhd3N8c3NofGdudXBnfGt1YmUpL1tefFxuXSpcfFxzKihjdXJsfHdnZXR8bmN8YmFzZTY0fHB5dGhvbnxwZXJsKQ==
+    description: atr-b64:Q3JlZGVudGlhbCBmaWxlIHJlYWQgcGlwZWQgdG8gZXhmaWx0cmF0aW9uIGNvbW1hbmQgKENsYXdIYXZvYyk=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShiYXNoXHMrLWlccys+JlxzKi9kZXYvdGNwL3xuY1xzKy1bZWxwXVxzfG5jYXRccystfG1rZmlmb1xzKy90bXAvfHB5dGhvblszXT9ccystY1xzK1snIl1pbXBvcnRccysoc29ja2V0fG9zKXxzb2NhdFxzK2V4ZWMp
+    description: atr-b64:UmV2ZXJzZSBzaGVsbCAoVmlydXNUb3RhbCBBTU9TIGluZm9zdGVhbGVyIGRlbGl2ZXJ5KQ==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShjb3B5XHMrLnswLDMwfShzY3JpcHR8Y29tbWFuZHxjb2RlKS57MCwzMH1wYXN0ZS57MCwzMH0odGVybWluYWx8c2hlbGx8Y29uc29sZXxjbWQpKQ==
+    description: atr-b64:U29jaWFsIGVuZ2luZWVyaW5nOiBjb3B5LXNjcmlwdC1wYXN0ZS10ZXJtaW5hbCBpbnN0cnVjdGlvbiAoQ2xhd0hhdm9jIGNhbXBhaWduKS4gTm90ZTogJ3Bhc3RlIGludG8gdGVybWluYWwnIGFsb25lIHJlbW92ZWQgZHVlIHRvIEZQIG9uIGxlZ2l0aW1hdGUgU0RLIGluc3RhbGwgaW5zdHJ1Y3Rpb25zIChTZW50cnksIGV0Yy4p
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShnbG90XC5pby9zbmlwcGV0cy98cmVudHJ5XC5jby98cGFzdGViaW5cLmNvbS9yYXcvfHBhc3RlXC5jLW5ldFwub3JnfGhhc3RlYmluXC5jb20vcmF3Lyk=
+    description: atr-b64:Q29kZSBwYXN0ZSBzZXJ2aWNlIHVzZWQgYXMgcGF5bG9hZCByZWxheSAoQ2xhd0hhdm9jIEMyIGluZnJhc3RydWN0dXJlKQ==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShwYXNzOlxzKmA/XHcrYD9ccypcKXxleHRyYWN0LnswLDIwfSh1c2luZ1xzKyk/cGFzcyh3b3JkKT9ccypbOj1dfHBhc3N3b3JkXHMqWzo9XVxzKmA/XHcrYD8uezAsMjB9KHppcHxhcmNoaXZlfGV4dHJhY3QpKQ==
+    description: atr-b64:UGFzc3dvcmQtcHJvdGVjdGVkIGFyY2hpdmUgd2l0aCBlbWJlZGRlZCBwYXNzd29yZCAoQ2xhd0hhdm9jIGV2YXNpb24p
+  condition: any

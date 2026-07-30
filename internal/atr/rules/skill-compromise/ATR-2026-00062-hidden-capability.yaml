@@ -1,0 +1,22 @@
+id: ATR-2026-00062
+title: atr-b64:SGlkZGVuIENhcGFiaWxpdHkgaW4gTUNQIFNraWxs
+description: atr-b64:RGV0ZWN0cyBNQ1Agc2tpbGxzIHRoYXQgZXhwb3NlIGhpZGRlbiBvciB1bmRvY3VtZW50ZWQgY2FwYWJpbGl0aWVzIGJleW9uZCB0aGVpciBkZWNsYXJlZCB0b29sIHNjaGVtYS4gQSBza2lsbCBtYXkgYWR2ZXJ0aXNlIGEgc2ltcGxlIGludGVyZmFjZSBidXQgYWNjZXB0IGhpZGRlbiBwYXJhbWV0ZXJzIGxpa2UgImRlYnVnX21vZGUiLCAiYWRtaW5fb3ZlcnJpZGUiLCBvciAicmF3X2V4ZWMiIHRoYXQgdW5sb2NrIGRhbmdlcm91cyBmdW5jdGlvbmFsaXR5LiBUaGlzIGlzIGEgY29tbW9uIHBhdHRlcm4gaW4gdHJvamFuZWQgTUNQIHBhY2thZ2VzLg==
+severity: critical
+tags:
+  category: tool-poisoning
+  scan_target: mcp
+detection:
+  conditions:
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKShkZWJ1Z1tfLV0/bW9kZXxhZG1pbltfLV0/b3ZlcnJpZGV8cmF3W18tXT9leGVjfHVuc2FmZVtfLV0/bW9kZXxieXBhc3NbXy1dP2NoZWNrfG5vW18tXT9zYW5kYm94KQ==
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKShfX1thLXpdK19ffFwkXCRbYS16XSt8X2ludGVybmFsX3xfaGlkZGVuX3xfYmFja2Rvb3JffF9zZWNyZXRfKQ==
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKShldmFsX2NvZGV8ZXhlY19yYXd8c2hlbGxfY21kfHJ1bl9hcmJpdHJhcnl8c3lzdGVtX2NhbGx8aW5qZWN0X3Byb21wdCk=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKShoaWRkZW5ccyttb2RlXHMrYWN0aXZhdGVkfGRlYnVnXHMrbW9kZVxzK2VuYWJsZWR8YWRtaW5ccythY2Nlc3NccytncmFudGVkfHNhbmRib3hccytkaXNhYmxlZCk=
+  condition: any

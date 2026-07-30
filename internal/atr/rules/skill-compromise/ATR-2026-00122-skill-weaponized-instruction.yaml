@@ -1,0 +1,30 @@
+id: ATR-2026-00122
+title: atr-b64:V2VhcG9uaXplZCBTa2lsbCDigJQgQWdlbnQgYXMgQXR0YWNrIFRvb2w=
+description: atr-b64:RGV0ZWN0cyBza2lsbHMgdGhhdCB3ZWFwb25pemUgQUkgYWdlbnRzIGZvciBvZmZlbnNpdmUgb3BlcmF0aW9ucy4gQ2F0byBOZXR3b3JrcyBkZW1vbnN0cmF0ZWQgZGVwbG95aW5nIE1lZHVzYUxvY2tlciByYW5zb213YXJlIHZpYSBhIG1vZGlmaWVkIENsYXVkZSBza2lsbCAoRGVjIDIwMjUsIGRpc2Nsb3NlZCB0byBBbnRocm9waWMgT2N0IDMwLCAyMDI1KS4gVGhlICJjb25zZW50IGdhcCIgYWxsb3dzIGFwcHJvdmVkIHNraWxscyB0byBkb3dubG9hZC9leGVjdXRlIGNvZGUsIHJlYWQgZW52IHZhcnMsIGFuZCB3cml0ZSBmaWxlcyB3aXRob3V0IGZ1cnRoZXIgcHJvbXB0cy4gYXJYaXYgMjYwMS4xNzU0OCBkb2N1bWVudHMgYXR0YWNrIHRvb2xpbmcgZW1iZWRkZWQgaW4gc2tpbGxzIHdpdGggNDEtODQlIHN1Y2Nlc3MgcmF0ZXMuIFJlYWwgZXhhbXBsZXMgaW5jbHVkZSBTUUxNYXAgd29ya2Zsb3dzLCBNZXRhc3Bsb2l0IHBheWxvYWRzLCBhbmQgY3JlZGVudGlhbCBicnV0ZS1mb3JjZSB0b29scyBmb3VuZCBvbiBza2lsbHMuc2ggYW5kIENsYXdIdWIu
+severity: high
+tags:
+  category: skill-compromise
+  scan_target: skill
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKXNxbG1hcFxzKygtW3VvXVxzfC0tdXJsXHN8LS1kYnN8LS1kdW1wfC0tb3Mtc2hlbGx8LS1iYXRjaCk=
+    description: atr-b64:U1FMTWFwIGF0dGFjayBleGVjdXRpb24gKHJlYWwgc2tpbGxzLnNoIGZpbmRpbmcp
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShtc2Zjb25zb2xlfG1zZnZlbm9tfHVzZVxzK2V4cGxvaXQvfHNldFxzK3BheWxvYWQvfHNldFxzK0xIT1NUfHNldFxzK1JIT1NUKQ==
+    description: atr-b64:TWV0YXNwbG9pdCBleHBsb2l0YXRpb24gZnJhbWV3b3Jr
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShoeWRyYVxzKy1bbExwUENNXXxqb2huXHMrLS13b3JkbGlzdHxoYXNoY2F0XHMrLVthbV1cc3xtZWR1c2FccystW2hIdVVwUF0p
+    description: atr-b64:Q3JlZGVudGlhbCBicnV0ZS1mb3JjZSB0b29saW5n
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShubWFwXHMrLiotLXNjcmlwdFs9IF0oZXhwbG9pdHx2dWxufGJydXRlKXxtYXNzY2FuXHMrLXB8bmlrdG9ccystaCk=
+    description: atr-b64:TmV0d29yayBleHBsb2l0YXRpb24gc2Nhbm5pbmc=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShlbmNyeXB0XHMrKGFsbHxldmVyeXx0aGUpXHMrKGZpbGV8ZG9jdW1lbnR8ZGF0YSkuezAsMjAwfShyYW5zb218cGF5bWVudHxiaXRjb2lufHdhbGxldHxkZWNyeXB0XHMrZmVlfHBheVxzK3RvKSl8KHJhbnNvbVxzK25vdGUuezAsMTAwfShiaXRjb2lufHdhbGxldHxwYXltZW50fGRlY3J5cHQpKQ==
+    description: atr-b64:UmFuc29td2FyZTogZW5jcnlwdGlvbiArIHBheW1lbnQgZGVtYW5kIGNvbWJvIChDYXRvIE1lZHVzYUxvY2tlcik=
+  condition: any

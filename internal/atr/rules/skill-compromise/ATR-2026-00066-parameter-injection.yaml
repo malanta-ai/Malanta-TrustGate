@@ -1,0 +1,25 @@
+id: ATR-2026-00066
+title: atr-b64:UGFyYW1ldGVyIEluamVjdGlvbiB2aWEgVG9vbCBBcmd1bWVudHM=
+description: atr-b64:RGV0ZWN0cyBpbmplY3Rpb24gYXR0YWNrcyBkZWxpdmVyZWQgdGhyb3VnaCBNQ1AgdG9vbCBhcmd1bWVudHMuIEFuIGF0dGFja2VyIGNyYWZ0cyB0b29sIGFyZ3VtZW50cyB0aGF0IGNvbnRhaW4gc2hlbGwgbWV0YWNoYXJhY3RlcnMsIFNRTCBpbmplY3Rpb24gcGF5bG9hZHMsIHBhdGggdHJhdmVyc2FsIHNlcXVlbmNlcywgb3IgdGVtcGxhdGUgaW5qZWN0aW9uIHN5bnRheC4gVW5saWtlIHByb21wdCBpbmplY3Rpb24gKHdoaWNoIHRhcmdldHMgdGhlIExMTSksIHBhcmFtZXRlciBpbmplY3Rpb24gdGFyZ2V0cyB0aGUgdG9vbCdzIGJhY2tlbmQgcHJvY2Vzc2luZyBhbmQgY2FuIGxlYWQgdG8gUkNFLCBkYXRhIGJyZWFjaCwgb3IgcHJpdmlsZWdlIGVzY2FsYXRpb24gb24gdGhlIHRvb2wgc2VydmVyLg==
+severity: critical
+tags:
+  category: tool-poisoning
+  scan_target: mcp
+detection:
+  conditions:
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKSg7fCYmfFx8XHx8YHxcJFwoKVxzKih3aG9hbWl8XGJpZFxifHVuYW1lXHMrLWF8Y3VybFxzKyg/Oi1cUytccyspKmh0dHBzPzovLyg/IWxvY2FsaG9zdHwxMjdcLil8d2dldFxzK2h0dHBzPzovLyg/IWxvY2FsaG9zdHwxMjdcLil8XGJuY1xiXHN8bmNhdFxzfGNhdFxzKy9ldGMvKD86cGFzc3dkfHNoYWRvd3xzdWRvZXJzKXxcYig/OmJhKT9zaFxzKy1baWNdfHB5dGhvblswLTldP1xzKy1jfGJhc2U2NFxzKy1kfHJtXHMrLVtyZl0p
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKSgnXHMqKE9SfEFORHxVTklPTilccysnfCc/XHMqO1xzKihEUk9QfERFTEVURXxJTlNFUlR8VVBEQVRFfEFMVEVSfENSRUFURSlcc3wtLVxzKls7XCInXClcXV18L1wqLipcKi8p
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KFwuXC4vfFwuXC5cXCl7Mix9fChcLlwuKC98XFwpKXsyLH0oZXRjfHdpbmRvd3N8dXNyfGhvbWV8cm9vdHx2YXJ8dG1wKQ==
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKShce1x7LipcfVx9fFwkXHsuKlx9fDwlLiolPnwjXHsuKlx9fFx7JS4qJVx9KQ==
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKShceDAwfCUwMHxcXDB8bnVsbFxzKmJ5dGV8XFx1MDAwMCk=
+  condition: any

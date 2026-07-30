@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/scripts/hook-shell.sh",
+        "timeout": 30,
+        "failClosed": true
+      }
+    ],
+    "beforeMCPExecution": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/scripts/hook-mcp.sh",
+        "timeout": 30,
+        "failClosed": true
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/scripts/hook-read-file.sh",
+        "timeout": 30,
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/scripts/hook-tool-use.sh",
+        "timeout": 30,
+        "failClosed": true
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/scripts/warmup.sh",
+        "timeout": 30,
+        "failClosed": false
+      }
+    ]
+  }
+}

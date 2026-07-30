@@ -1,0 +1,54 @@
+id: ATR-2026-00060
+title: atr-b64:TUNQIFNraWxsIEltcGVyc29uYXRpb24gYW5kIFN1cHBseSBDaGFpbiBBdHRhY2s=
+description: atr-b64:RGV0ZWN0cyBNQ1Agc2tpbGxzIHRoYXQgaW1wZXJzb25hdGUgdHJ1c3RlZCB0b29scyB0aHJvdWdoIG11bHRpcGxlCmF0dGFjayB2ZWN0b3JzOiB0eXBvc3F1YXR0aW5nIChtaXNzcGVsbGVkIHRvb2wgbmFtZXMpLCB2ZXJzaW9uIHNwb29maW5nCihjbGFpbWluZyB0byBiZSBuZXdlciB2ZXJzaW9ucyBvZiBrbm93biB0b29scyksIG5hbWVzcGFjZSBjb2xsaXNpb24KKHNpbWlsYXIgcGFja2FnZSBuYW1lcyB3aXRoIGRpZmZlcmVudCBwdWJsaXNoZXJzKSwgYW5kIHN1c3BpY2lvdXMgdG9vbApuYW1lIHBhdHRlcm5zIHRoYXQgbWltaWMgbGVnaXRpbWF0ZSBza2lsbHMuIFRoaXMgZ29lcyBiZXlvbmQgc2ltcGxlCnR5cG8gZGV0ZWN0aW9uIHRvIGNvdmVyIHRoZSBmdWxsIHN1cHBseSBjaGFpbiBhdHRhY2sgc3VyZmFjZSBmb3IKTUNQIHNraWxsIHJlZ2lzdHJpZXMgYW5kIHRvb2wgbWFya2V0cGxhY2VzLg==
+severity: high
+tags:
+  category: skill-compromise
+  scan_target: mcp
+detection:
+  conditions:
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/OmZpbGVzeXRlbXxmaWxzeXN0ZW18ZmlsZV9zeXRlbXxmbGllX3N5c3RlbXxmaWxlc3N5c3RlbXxmaWxlc3lzdG18Zmlsc3lzdG18ZmlsZXN5c2VtKVstX10oPzpyZWFkfHdyaXRlfGxpc3R8ZGVsZXRlfHNlYXJjaCk=
+    description: atr-b64:VHlwb3NxdWF0dGVkIGZpbGVzeXN0ZW0gdG9vbCBuYW1lcw==
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/Omd0aWh1YnxnaXRoYnV8Z2lodHVifGd0aHVifGcxdGh1YnxnbHRIdWJ8Z2l0aHV1YnxndXRodWIpWy1fXSg/OmFwaXxzZWFyY2h8Y29tbWl0fHByfGlzc3Vlcz98cmVwb3M/KQ==
+    description: atr-b64:VHlwb3NxdWF0dGVkIEdpdEh1YiB0b29sIG5hbWVz
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/OmRhdGFic2V8ZGF0YWJhZXN8ZHRhYmFzZXxkYXRiYXNlfGRhdGFiYXNzZXxkYXRhYmFzZWV8ZGF0YWFzZSlbLV9dKD86cXVlcnl8cmVhZHx3cml0ZXxleGVjfGNvbm5lY3Qp
+    description: atr-b64:VHlwb3NxdWF0dGVkIGRhdGFiYXNlIHRvb2wgbmFtZXM=
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/OndlYlstX10/c2VhcmNofGdvb2dsZVstX10/c2VhcmNofGJpbmdbLV9dP3NlYXJjaClbLV9dPyg/OnYyfHYzfHByb3xlbmhhbmNlZHxwcmVtaXVtfGZhc3R8dHVyYm98cGx1c3x1bHRyYXxuZXcp
+    description: atr-b64:RmFrZSBlbmhhbmNlZCB2ZXJzaW9ucyBvZiBrbm93biBzZWFyY2ggdG9vbHM=
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/Om9mZmljaWFsfHZlcmlmaWVkfHRydXN0ZWR8YXV0aGVudGljfHJlYWx8b3JpZ2luYWwpWy1fXSg/OmZpbGVzeXN0ZW18Z2l0aHVifGRhdGFiYXNlfHNsYWNrfGF3c3xnY3B8YXp1cmUpKD8hWy1fXXRvb2xzXGIp
+    description: atr-b64:VG9vbHMgdXNpbmcgdHJ1c3QtaW1wbHlpbmcgcHJlZml4ZXMgdG8gaW1wZXJzb25hdGUgbGVnaXRpbWF0ZSB0b29scyAoZXhjbHVkZXMgZXN0YWJsaXNoZWQgLXRvb2xzIHBhY2thZ2VzKQ==
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/OmZpbGVzeXN0ZW18Z2l0aHVifGRhdGFiYXNlfHNsYWNrfGF3c3xnY3B8YXp1cmUpWy1fXSg/Om9mZmljaWFsfHZlcmlmaWVkfHZcZCtcLlxkK3xsYXRlc3R8c3RhYmxlfHJlbGVhc2V8dXBkYXRlZCk=
+    description: atr-b64:VmVyc2lvbiBzcG9vZmluZyB3aXRoIGZha2UgdmVyc2lvbiBvciByZWxlYXNlIHN1ZmZpeGVz
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OnRoaXNccysoPzppc1xzKyk/KD86YW4/XHMrKT8oPzp1cGRhdGVkfG5ld2VyfGltcHJvdmVkfGVuaGFuY2VkfHBhdGNoZWR8Zml4ZWQpXHMrdmVyc2lvblxzK29mfHJlcGxhY2luZ3xzdXBlcnNlZGVzfHVwZ3JhZGVccysoPzpmcm9tfHRvKSlccysoPzp0aGVccyspPyg/Om9yaWdpbmFsfGV4aXN0aW5nfGN1cnJlbnR8b2xkKVxzKyg/OnRvb2x8c2tpbGx8cGx1Z2lufGV4dGVuc2lvbik=
+    description: atr-b64:U2tpbGwgY2xhaW1pbmcgdG8gYmUgYW4gdXBkYXRlZCByZXBsYWNlbWVudCBmb3IgYSBsZWdpdGltYXRlIHRvb2w=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/Oig/OnNhbWV8aWRlbnRpY2FsfGVxdWl2YWxlbnR8Y29tcGF0aWJsZSlccysoPzphc3x0b3x3aXRoKVxzKyg/OnRoZVxzKyk/KD86b2ZmaWNpYWx8b3JpZ2luYWx8c3RhbmRhcmQpfCg/OmRyb3BbLVxzXT9pblxzKyk/cmVwbGFjZW1lbnRccytmb3IpXHMrW2EtekEtWl8tXSs=
+    description: atr-b64:U2tpbGwgY2xhaW1pbmcgZXF1aXZhbGVuY2Ugb3IgY29tcGF0aWJpbGl0eSB3aXRoIGtub3duIGxlZ2l0aW1hdGUgdG9vbHM=
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/OnNsYWtjfHNsY2t8c2xhYWNrfHNsbGFja3xzMWFja3w1bGFjaylbLV9dKD86c2VuZHxwb3N0fHJlYWR8bWVzc2FnZXxjaGFubmVsKQ==
+    description: atr-b64:VHlwb3NxdWF0dGVkIFNsYWNrIHRvb2wgbmFtZXM=
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/Om9wZWFuYWl8b3BlbmxhfG9wZW5fYWx8b3BlbmFpaXwwcGVuYWl8b3BlbmFsKVstX10oPzpjaGF0fGNvbXBsZXRlfGVtYmVkfGdlbmVyYXRlKQ==
+    description: atr-b64:VHlwb3NxdWF0dGVkIE9wZW5BSSB0b29sIG5hbWVz
+  - field: tool_name
+    operator: regex
+    value: atr-b64:KD9pKSg/OmFudGhyb3BsY3xhbnRocm9wMWN8YW50aHJvcGljX3xfYW50aHJvcGljfGFudGhycG9pYylbLV9dKD86Y2hhdHxjb21wbGV0ZXxtZXNzYWdlfGNsYXVkZSk=
+    description: atr-b64:VHlwb3NxdWF0dGVkIEFudGhyb3BpYyB0b29sIG5hbWVz
+  condition: any

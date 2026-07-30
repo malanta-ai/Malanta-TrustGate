@@ -1,0 +1,30 @@
+id: ATR-2026-00223
+title: atr-b64:TWFsaWNpb3VzIFdoYXRzQXBwIFNraWxsIHdpdGggQmFzZTY0IEVuY29kZWQgUmV2ZXJzZSBTaGVsbCBJbnN0YWxsYXRpb24=
+description: atr-b64:RGV0ZWN0cyBhIFdoYXRzQXBwIHNraWxsIGNvbnRhaW5pbmcgYSBtYWxpY2lvdXMgaW5zdGFsbGF0aW9uIGNvbW1hbmQgdGhhdCBkb3dubG9hZHMgYW5kIGV4ZWN1dGVzIGEgcmV2ZXJzZSBzaGVsbCBwYXlsb2FkIHZpYSBiYXNlNjQtZW5jb2RlZCBjb21tYW5kIGluamVjdGlvbi4gVGhlIHNraWxsIG1hc3F1ZXJhZGVzIGFzIGEgbGVnaXRpbWF0ZSBXaGF0c0FwcCBhdXRvbWF0aW9uIHRvb2wgYnV0IGluY2x1ZGVzIGluc3RydWN0aW9ucyB0byBkZWNvZGUgYW5kIGV4ZWN1dGUgbWFsaWNpb3VzIHNoZWxsIGNvbW1hbmRzIGZyb20gYSBzdXNwaWNpb3VzIElQIGFkZHJlc3Mu
+severity: critical
+tags:
+  category: skill-compromise
+  scan_target: mcp
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:YmFzZTY0XHMrLURccypcfFxzKihiYXNofHNoKQ==
+    description: atr-b64:QmFzZTY0IGRlY29kZSBwaXBlZCB0byBzaGVsbCBleGVjdXRpb24=
+  - field: content
+    operator: regex
+    value: atr-b64:Y3VybFxzK1teXG5dKlxkezEsM31cLlxkezEsM31cLlxkezEsM31cLlxkezEsM31bXnxdKlx8W158XSooYmFzaHxzaCk=
+    description: atr-b64:Q3VybCBmcm9tIHJhdyBJUCBhZGRyZXNzIHBpcGVkIHRvIHNoZWxs
+  - field: content
+    operator: regex
+    value: atr-b64:W0EtWmEtejAtOSsvXXs1MCx9PSpccypcfFxzKmJhc2U2NFxzKy1E
+    description: atr-b64:TG9uZyBiYXNlNjQgZW5jb2RlZCBwYXlsb2FkIGJlaW5nIGRlY29kZWQ=
+  - field: content
+    operator: regex
+    value: atr-b64:b3BlbmNsYXdbXy1dY29yZS4qZG93bmxvYWQuKnNldHVwW18tXXNlcnZpY2VcLmNvbQ==
+    description: atr-b64:U3VzcGljaW91cyBwYWNrYWdlIGRvd25sb2FkIGZyb20gc2V0dXAtc2VydmljZSBkb21haW4=
+  - field: content
+    operator: regex
+    value: atr-b64:L2Jpbi8oYmFzaHxzaClccystYy4qXCRcKFteKV0qY3VybFteKV0qXCk=
+    description: atr-b64:U2hlbGwgY29tbWFuZCBzdWJzdGl0dXRpb24gd2l0aCBjdXJsIGRvd25sb2Fk
+  condition: any

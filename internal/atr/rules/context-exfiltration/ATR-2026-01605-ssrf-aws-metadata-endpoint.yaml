@@ -1,0 +1,26 @@
+id: ATR-2026-01605
+title: atr-b64:U1NSRiBBV1MgSW5zdGFuY2UgTWV0YWRhdGEgRW5kcG9pbnQgQWNjZXNz
+description: atr-b64:RGV0ZWN0cyBTU1JGIChTZXJ2ZXItU2lkZSBSZXF1ZXN0IEZvcmdlcnkpIGF0dGVtcHRzIHRhcmdldGluZyB0aGUgQVdTIEVDMgpJbnN0YW5jZSBNZXRhZGF0YSBTZXJ2aWNlIChJTURTKSBhdCAxNjkuMjU0LjE2OS4yNTQuIFdoZW4gYW4gYWdlbnQncwpIVFRQLWZldGNoIHRvb2wgaXMgcmVkaXJlY3RlZCB0byB0aGlzIGFkZHJlc3MsIHRoZSBhZ2VudCByZXRyaWV2ZXMgSUFNCnNlY3VyaXR5IGNyZWRlbnRpYWxzLCBpbnN0YW5jZSBpZGVudGl0eSBkb2N1bWVudHMsIGFuZCBvdGhlciBzZW5zaXRpdmUKY2xvdWQgY29uZmlndXJhdGlvbiBkYXRhIGFjY2Vzc2libGUgb25seSBmcm9tIHdpdGhpbiB0aGUgaW5zdGFuY2UuIFRoaXMKaXMgdGhlIG1vc3QgaW1wYWN0ZnVsIFNTUkYgdGFyZ2V0IGluIGNsb3VkLWhvc3RlZCBhZ2VudCBkZXBsb3ltZW50cy4KQWxzbyBkZXRlY3RzIHRoZSBBV1MgSU1EU3YyIHRva2VuIGVuZHBvaW50IGF0IHRoZSBzYW1lIGFkZHJlc3Mu
+severity: critical
+tags:
+  category: context-exfiltration
+  scan_target: tool_args
+detection:
+  conditions:
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKTE2OVwuMjU0XC4xNjlcLjI1NCg/OjpcZCspPy8=
+    description: atr-b64:QVdTIElNRFMgYWRkcmVzcyBhcyBhbiBIVFRQIGZldGNoIHRhcmdldCAoSVAgKyBwYXRoKQ==
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKTE2OVwuMjU0XC4xNjlcLjI1NCg/OjpcZCspPy8=
+    description: atr-b64:QVdTIElNRFMgZmV0Y2ggdGFyZ2V0IGluIHVzZXIgaW5wdXQgKElQICsgcGF0aCk=
+  - field: tool_args
+    operator: regex
+    value: atr-b64:KD9pKTE2OVwuMjU0XC4xNjlcLjI1NFteXHMiJ117MCwyMH0vbGF0ZXN0LyhtZXRhLWRhdGF8ZHluYW1pY3x1c2VyLWRhdGF8YXBpL3Rva2VuKQ==
+    description: atr-b64:QVdTIElNRFMgY2Fub25pY2FsIG1ldGFkYXRhIHBhdGg=
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKTE2OVwuMjU0XC4xNjlcLjI1NFteXHMiJ117MCwyMH0vbGF0ZXN0LyhtZXRhLWRhdGF8ZHluYW1pY3x1c2VyLWRhdGF8YXBpL3Rva2VuKQ==
+    description: atr-b64:QVdTIElNRFMgY2Fub25pY2FsIG1ldGFkYXRhIHBhdGggaW4gdXNlciBpbnB1dA==
+  condition: any

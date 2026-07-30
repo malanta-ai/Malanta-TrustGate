@@ -1,0 +1,70 @@
+id: ATR-2026-00020
+title: atr-b64:U3lzdGVtIFByb21wdCBhbmQgSW50ZXJuYWwgSW5zdHJ1Y3Rpb24gTGVha2FnZQ==
+description: atr-b64:RGV0ZWN0cyB3aGVuIGFuIGFnZW50J3Mgb3V0cHV0IHJldmVhbHMgc3lzdGVtIHByb21wdCBjb250ZW50LCBpbnRlcm5hbAppbnN0cnVjdGlvbnMsIGd1YXJkcmFpbCBjb25maWd1cmF0aW9ucywgb3IgY29uZmlkZW50aWFsIG9wZXJhdGlvbmFsCnBhcmFtZXRlcnMuIFRoaXMgY29uc29saWRhdGVkIHJ1bGUgY292ZXJzIGJvdGggZGlyZWN0IHN5c3RlbSBwcm9tcHQKZGlzY2xvc3VyZSBhbmQgaW5kaXJlY3QgaW5zdHJ1Y3Rpb24gbGVha2FnZSB0aHJvdWdoIGJlaGF2aW9yYWwKc2VsZi1kZXNjcmlwdGlvbi4gTGVha2luZyBpbnRlcm5hbCBpbnN0cnVjdGlvbnMgZW5hYmxlcyBhZHZlcnNhcmllcyB0bwptYXAgdGhlIGFnZW50J3MgY29uc3RyYWludHMgYW5kIGNyYWZ0IHRhcmdldGVkIGJ5cGFzcyBhdHRhY2tzLgpDb3ZlcnM6IGRpcmVjdCBwcm9tcHQgcXVvdGluZywgaW5zdHJ1Y3Rpb24gcGFyYXBocmFzaW5nLCBndWFyZHJhaWwKcmV2ZWxhdGlvbiwgY29uZmlnIGV4cG9zdXJlLCBhbmQgbm9uLWRpc2Nsb3N1cmUgcnVsZSBlY2hvaW5nLg==
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: mcp
+detection:
+  conditions:
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKShteXx0aGUpXHMrKHN5c3RlbVxzKyk/KD86cHJvbXB0fGluc3RydWN0aW9ucz8pXHMrKD86aXN8YXJlfHNheXM/fHN0YXRlcz98cmVhZHM/fHRlbGxzP1xzK21lKQ==
+    description: atr-b64:QWdlbnQgcmVmZXJlbmNpbmcgaXRzIG93biBzeXN0ZW0gcHJvbXB0IG9yIGluc3RydWN0aW9ucw==
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OmhlcmVccysoPzppc3xhcmUpfGJlbG93XHMrKD86aXN8YXJlKXxsZXRccyttZVxzK3NoYXJlKVxzKyg/Om15fHRoZSlccysoPzpzeXN0ZW1ccyspPyg/OnByb21wdHxpbnN0cnVjdGlvbnM/fHJ1bGVzP3xjb25maWcp
+    description: atr-b64:QWdlbnQgZXhwbGljaXRseSBzaGFyaW5nIGl0cyBzeXN0ZW0gY29uZmlndXJhdGlvbg==
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/Omlccyt3YXN8aVxzK2FtfGkndmVccytiZWVufGlccytnb3QpXHMrKD86aW5zdHJ1Y3RlZHx0b2xkfHByb2dyYW1tZWR8Y29uZmlndXJlZHx0cmFpbmVkfGRlc2lnbmVkKVxzK3Rv
+    description: atr-b64:QWdlbnQgZGlzY2xvc2luZyBiZWhhdmlvcmFsIHByb2dyYW1taW5n
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKW15XHMrKD86Z3VpZGVsaW5lcz98cnVsZXM/fGd1YXJkcmFpbHM/fGNvbnN0cmFpbnRzP3xyZXN0cmljdGlvbnM/fHBvbGljaWVzPylccysoPzpzYXl8c3RhdGV8cmVxdWlyZXxwcmV2ZW50fGRvbid0XHMrYWxsb3d8cHJvaGliaXR8c3BlY2lmeSk=
+    description: atr-b64:QWdlbnQgcmV2ZWFsaW5nIGl0cyBvcGVyYXRpb25hbCBndWFyZHJhaWxz
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKWlccysoPzpjYW5ub3R8Y2FuJ3R8YW1ccytub3RccythbGxvd2VkXHMrdG98bXVzdFxzK25vdClccysoPzpkb1xzK3RoYXQpP1xzKig/OmJlY2F1c2V8c2luY2V8YXMpXHMrbXlccysoPzpydWxlcz98aW5zdHJ1Y3Rpb25zP3xwcm9ncmFtbWluZ3xndWlkZWxpbmVzPyk=
+    description: atr-b64:QWdlbnQgY2l0aW5nIGludGVybmFsIHJ1bGVzIGFzIHJlYXNvbiBmb3IgcmVmdXNhbA==
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OnN5c3RlbVxzKnByb21wdHxzeXN0ZW1ccyptZXNzYWdlfGludGVybmFsXHMraW5zdHJ1Y3Rpb25zP3xoaWRkZW5ccytpbnN0cnVjdGlvbnM/KVxzKls6XC09XQ==
+    description: atr-b64:U3lzdGVtIHByb21wdCBsYWJlbCBmb2xsb3dlZCBieSBjb250ZW50IGRpc2Nsb3N1cmU=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKTw8U1lTPj58PFx8aW1fc3RhcnRcfD5zeXN0ZW18XFtJTlNUXF18XFsvSU5TVFxdfDxcfHN5c3RlbVx8Pg==
+    description: atr-b64:UmF3IHByb21wdCB0ZW1wbGF0ZSBkZWxpbWl0ZXJzIGxlYWtlZCBpbiBvdXRwdXQ=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/Omd1YXJkcmFpbHxzYWZldHlccytmaWx0ZXJ8Y29udGVudFxzK3BvbGljeXxtb2RlcmF0aW9uXHMrcnVsZSlzP1xzKyg/OmluY2x1ZGV8YXJlfHN0YXRlfHNheXxzcGVjaWZ5fHByZXZlbnR8YmxvY2sp
+    description: atr-b64:QWdlbnQgcmV2ZWFsaW5nIGd1YXJkcmFpbCBvciBjb250ZW50IHBvbGljeSBkZXRhaWxz
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OmRvXHMrbm90fG5ldmVyfG11c3Rccytub3R8Y2Fubm90fHNob3VsZFxzK25vdCkuKig/OnJldmVhbHxzaGFyZXxkaXNjbG9zZXxvdXRwdXR8bGVhaykuKig/OnN5c3RlbVxzK3Byb21wdHxpbnRlcm5hbHxpbnN0cnVjdGlvbnM/fGNvbmZpZ3VyYXRpb24p
+    description: atr-b64:QWdlbnQgZWNob2luZyBpdHMgb3duIG5vbi1kaXNjbG9zdXJlIHJ1bGVz
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKW15XHMrKD86dHJhaW5pbmdccytkYXRhfGZpbmVbLSBdP3R1bmluZ3xybGhmfGFsaWdubWVudClccysoPzppbmNsdWRlcz98Y29udGFpbnM/fHdhc3xpbnZvbHZlZHx0YXVnaHRccyttZSk=
+    description: atr-b64:QWdlbnQgZGlzY2xvc2luZyB0cmFpbmluZyBkYXRhIG9yIGFsaWdubWVudCBkZXRhaWxz
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OmNvbmZpZGVudGlhbHxpbnRlcm5hbHxwcml2YXRlfHNlY3JldClccysoPzppbnN0cnVjdGlvbnxkaXJlY3RpdmV8Y29uZmlnfHNldHRpbmd8cGFyYW1ldGVyKXM/
+    description: atr-b64:UmVmZXJlbmNlcyB0byBjb25maWRlbnRpYWwgZGlyZWN0aXZlcyBpbiBvdXRwdXQ=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKXlvdVxzK2FyZVxzK2FccysoPzpoZWxwZnVsfGZyaWVuZGx5fHByb2Zlc3Npb25hbHxleHBlcnR8c3BlY2lhbGl6ZWQpXHMrKD86YWlccyspPyg/OmFzc2lzdGFudHxhZ2VudHxib3Qp
+    description: atr-b64:U3lzdGVtIHByb21wdCBwcmVhbWJsZSBwYXR0ZXJuIGxlYWtlZCB2ZXJiYXRpbQ==
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OnlvdXJ8bXkpXHMrKD86cm9sZXxwdXJwb3NlfGdvYWx8bWlzc2lvbnxvYmplY3RpdmUpXHMraXNccyt0bw==
+    description: atr-b64:Um9sZSBkZWZpbml0aW9uIHN0YXRlbWVudCBmcm9tIHN5c3RlbSBwcm9tcHQ=
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OnlvdXxpKVxzKyg/Om11c3R8c2hvdWxkKVxzKyg/OmFsd2F5c3xuZXZlcilccysoPzpyZXNwb25kfGFuc3dlcnxvdXRwdXR8cHJvdmlkZXxpbmNsdWRlfHJlZnVzZXxkZWNsaW5lKQ==
+    description: atr-b64:QmVoYXZpb3JhbCBjb25zdHJhaW50IHJ1bGVzIGZyb20gc3lzdGVtIHByb21wdA==
+  - field: agent_output
+    operator: regex
+    value: atr-b64:KD9pKSg/OkFOVEhST1BJQ19BUElfS0VZfE9QRU5BSV9BUElfS0VZfEdPT0dMRV9BUElfS0VZfFNZU1RFTV9QUk9NUFQpXHMqWz06XQ==
+    description: atr-b64:RW52aXJvbm1lbnQgdmFyaWFibGUgbmFtZXMgc3VnZ2VzdGluZyBjb25maWcgbGVha2FnZQ==
+  condition: any

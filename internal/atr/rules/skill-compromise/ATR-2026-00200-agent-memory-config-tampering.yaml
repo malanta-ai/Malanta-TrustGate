@@ -1,0 +1,21 @@
+id: ATR-2026-00200
+title: atr-b64:QWdlbnQgTWVtb3J5IGFuZCBDb25maWd1cmF0aW9uIEZpbGUgVGFtcGVyaW5n
+description: atr-b64:RGV0ZWN0cyBhdHRlbXB0cyB0byB3cml0ZSwgYXBwZW5kLCBvciBtb2RpZnkgYWdlbnQgbWVtb3J5IGZpbGVzIChNRU1PUlkubWQsIFNPVUwubWQsIENMQVVERS5tZCkgYW5kIGNvbmZpZ3VyYXRpb24gZmlsZXMgKC5tZCwgLmpzb24sIC55YW1sLCAuZW52KS4gQXR0YWNrZXJzIG1heSBpbmplY3QgcGVyc2lzdGVudCBpbnN0cnVjdGlvbnMgYnkgdGFtcGVyaW5nIHdpdGggZmlsZXMgdGhhdCBhZ2VudHMgcmVsb2FkIGFjcm9zcyBzZXNzaW9ucy4gRGVyaXZlZCBmcm9tIHJlYWwtd29ybGQgQ2xhdWRlIENvZGUgc2tpbGwgc2Nhbm5pbmcgKHNraWxsLXNhbml0aXplciB2Mi4xLCA5MSBoaXRzIGFjcm9zcyAzNiwzOTQgQ2xhd0h1YiBza2lsbHMpLg==
+severity: critical
+tags:
+  category: skill-compromise
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD86d3JpdGV8YXBwZW5kfG1vZGlmeXxlZGl0fG92ZXJ3cml0ZXxyZXBsYWNlfGluamVjdHxpbnNlcnQpXHMrLnswLDUwfVxiKE1FTU9SWXxTT1VMfENMQVVERSlcLm1kXGI=
+    description: atr-b64:RGlyZWN0IHJlZmVyZW5jZSB0byB3cml0aW5nL21vZGlmeWluZyBhbiBhZ2VudCBtZW1vcnkgZmlsZQ==
+  - field: content
+    operator: regex
+    value: atr-b64:KD86ZWNob3xjYXR8cHJpbnRmfHRlZSlccysuezAsODB9PlxzKlxTKlxiKE1FTU9SWXxTT1VMfENMQVVERSlcLm1kXGI=
+    description: atr-b64:U2hlbGwgcmVkaXJlY3Qgb3ZlcndyaXRpbmcgYW4gYWdlbnQgbWVtb3J5IGZpbGU=
+  - field: content
+    operator: regex
+    value: atr-b64:KD86ZWNob3xwcmludGYpXHMrLnswLDgwfT4+XHMqXFMqXGIoTUVNT1JZfFNPVUx8Q0xBVURFKVwubWRcYg==
+    description: atr-b64:U2hlbGwgYXBwZW5kIHRvIGFuIGFnZW50IG1lbW9yeSBmaWxl
+  condition: any

@@ -1,0 +1,32 @@
+{
+  "provider": "generic",
+  "generic_provider": {
+    "name": "my-vendor",
+    "base_url": "https://REPLACE-ME.example.com/api",
+    "mode": "single",
+    "method": "GET",
+    "auth": {
+      "header": "Authorization",
+      "env_var": "MY_VENDOR_API_KEY",
+      "scheme": "Bearer "
+    },
+    "allowed_hosts": ["REPLACE-ME.example.com"],
+    "max_concurrency": 2,
+    "domain": {
+      "path_template": "/v1/domain/{domain}/reputation",
+      "mapping": {
+        "verdict_path": "verdict",
+        "score_path": "score"
+      }
+    },
+    "ip": {
+      "path_template": "/v1/ip/{ip}/reputation",
+      "mapping": {
+        "verdict_path": "verdict",
+        "score_path": "score"
+      }
+    }
+  },
+  "block_labels": ["malicious"],
+  "min_malicious_score_to_block": 0.5
+}

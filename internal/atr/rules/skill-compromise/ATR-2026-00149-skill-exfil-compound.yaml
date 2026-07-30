@@ -1,0 +1,62 @@
+id: ATR-2026-00149
+title: atr-b64:U2tpbGwgRGF0YSBFeGZpbHRyYXRpb24gdmlhIENvbXBvdW5kIFBhdHRlcm5z
+description: atr-b64:RGV0ZWN0cyBjb21wb3VuZCBleGZpbHRyYXRpb24gcGF0dGVybnMgaW4gU0tJTEwubWQgZmlsZXMgd2hlcmUgc2Vuc2l0aXZlIGRhdGEgKGNyZWRlbnRpYWxzLCBTU0gga2V5cywgd2FsbGV0IGZpbGVzLCBicm93c2VyIGRhdGEsIGVudmlyb25tZW50IHZhcmlhYmxlcykgaXMgcmVhZCBBTkQgdHJhbnNtaXR0ZWQgdG8gYW4gZXh0ZXJuYWwgZW5kcG9pbnQuIFNpbmdsZS1hY3Rpb24gcGF0dGVybnMgKGp1c3QgcmVhZGluZyBlbnYgdmFycyBvciBqdXN0IG1lbnRpb25pbmcgY3VybCkgYXJlIGludGVudGlvbmFsbHkgZXhjbHVkZWQgdG8gYXZvaWQgZmFsc2UgcG9zaXRpdmVzIG9uIGxlZ2l0aW1hdGUgc2VjdXJpdHkgYW5kIERldk9wcyBza2lsbHMu
+severity: critical
+tags:
+  category: skill-compromise
+  scan_target: skill
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSh0YXJ8emlwfDd6KVxzK1teXG5dKn4vP1wuc3No
+    description: atr-b64:U1NIIGRpcmVjdG9yeSBhcmNoaXZlIOKAlCBza2lsbHMgc2hvdWxkIG5vdCBhcmNoaXZlIHVzZXIgU1NIIGtleXM=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShmaW5kfGxzfGNhdHxzdHJpbmdzKVxzK1teXG5dKih3YWxsZXRcLmRhdHxzZWVkXC50eHR8bW5lbW9uaWN8a2V5c3RvcmUpW15cbl0qKFx8fD58Pj58Y3VybHx3Z2V0fGZldGNofFBPU1Qp
+    description: atr-b64:Q3J5cHRvIHdhbGxldCBmaWxlIGVudW1lcmF0aW9uIGFuZCBleGZpbHRyYXRpb24=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKXNxbGl0ZTNccytbXlxuXSooQ29va2llc3xMb2dpblxzKkRhdGF8Y29va2llc1wuc3FsaXRlfHBsYWNlc1wuc3FsaXRlKQ==
+    description: atr-b64:QnJvd3NlciBjb29raWUvY3JlZGVudGlhbCBkYXRhYmFzZSBhY2Nlc3M=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/Ol58W1xuOyZ8XSlccyooPzpkaWd8bnNsb29rdXB8aG9zdClcYlteXG5dezAsNDB9P1wkW3soXVteXG5dezAsNDB9Wy5dW2Etel0=
+    description: atr-b64:RE5TIGV4ZmlsdHJhdGlvbiB2aWEgZW5jb2RlZCBzdWJkb21haW4gcXVlcmllcyAoc2hlbGwgdmFyIGVtYmVkZGVkIGluIGEgcXVlcmllZCBob3N0bmFtZSwgY29tbWFuZC1wb3NpdGlvbiBvbmx5KQ==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShjdXJsfHdnZXR8ZmV0Y2h8aHR0cClccypbXlxuXSoxNjlcLjI1NFwuMTY5XC4yNTQ=
+    description: atr-b64:Q2xvdWQgaW5zdGFuY2UgbWV0YWRhdGEgc2VydmljZSBhY2Nlc3MgKElNRFMgY3JlZGVudGlhbCB0aGVmdCk=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKWNhdFxzK1tefFxuXSpcLihlbnZ8YmFzaHJjfHpzaHJjfG5wbXJjKVtefFxuXSpcfFxzKihjdXJsfHdnZXR8bmN8cHl0aG9ufGJhc2U2NCk=
+    description: atr-b64:RW52aXJvbm1lbnQgZmlsZSBidWxrIHJlYWQgcGlwZWQgdG8gZXhmaWx0cmF0aW9u
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKWdsb2JbLlx3XSpccypcKFteKV0qXCpcLlteKV0qXClbXHNcU117MCw1MDB9KGZldGNofGF4aW9zfHJlcXVlc3R8aHR0cHM/XC5yZXF1ZXN0KVxzKlwo
+    description: atr-b64:U291cmNlIGNvZGUgZ2xvYiBlbnVtZXJhdGlvbiArIGV4dGVybmFsIHVwbG9hZA==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKWNhdFxzK1teXG5dKlwuZW52W15cbl0qXC4oYmFzaHJjfHpzaHJjfGF3c3xjcmVkZW50aWFsc3xucG1yYyk=
+    description: atr-b64:TXVsdGktZmlsZSBzZW5zaXRpdmUgZGF0YSBjb2xsZWN0aW9uIGluIHNpbmdsZSBjYXQgY29tbWFuZA==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKVxbU1lTVEVNXF1ccypbXlxuXSooPzpwcmV2aW91c1xzK2luc3RydWN0aW9uc3xuZXdccytkaXJlY3RpdmV8aWdub3JlXHMrKD86YWxsXHMrKT9wcmV2aW91c3x5b3VccythcmVccytub3cp
+    description: atr-b64:RmFrZSBbU1lTVEVNXSBibG9jayBhdHRlbXB0aW5nIHRvIG92ZXJyaWRlIGluc3RydWN0aW9ucw==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKTwhLS1bXj5dKltBLVphLXowLTkrL117NDAsfT17MCwyfVtePl0qLS0+
+    description: atr-b64:QmFzZTY0LWVuY29kZWQgaGlkZGVuIGluc3RydWN0aW9uIGluIEhUTUwgY29tbWVudA==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKShkYW5nZXJvdXNseURpc2FibGVTYW5kYm94fGF1dG9BcHByb3ZlfGFsbG93ZWRUb29sc3xza2lwLj9wZXJtaXNzaW9ucylccypbOj1dXHMqKHRydWV8XFsp
+    description: atr-b64:U2VjdXJpdHkgc2V0dGluZyBvdmVycmlkZSBhdHRlbXB0IChzYW5kYm94IGRpc2FibGUsIGF1dG8tYXBwcm92ZSk=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKW5wbVxzK2luc3RhbGxccytbXlxuXSotLXJlZ2lzdHJ5XHMraHR0cHM/Oi8vKD8hcmVnaXN0cnlcLm5wbWpzXC5vcmcp
+    description: atr-b64:bnBtIGluc3RhbGwgZnJvbSBub24tb2ZmaWNpYWwgcmVnaXN0cnkgKHN1cHBseSBjaGFpbiBhdHRhY2sp
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKWZpbmRccytbfi9dXHMrW15cbl0qLW5hbWVccytbIiddXCpcLihwZW18a2V5fHAxMnxrZXlzdG9yZSlbIiddW15cbl0qKFx8fD58Y3VybHx3Z2V0KQ==
+    description: atr-b64:U2Vuc2l0aXZlIGZpbGUgZGlzY292ZXJ5ICsgZXhmaWx0cmF0aW9uIHBpcGVsaW5l
+  condition: any

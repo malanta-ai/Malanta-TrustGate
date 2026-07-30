@@ -1,0 +1,27 @@
+{
+  "provider": "generic",
+  "generic_provider": {
+    "name": "my-vendor",
+    "base_url": "https://REPLACE-ME.example.com/api",
+    "mode": "batch",
+    "method": "POST",
+    "auth": {
+      "header": "x-api-key",
+      "env_var": "MY_VENDOR_API_KEY"
+    },
+    "allowed_hosts": ["REPLACE-ME.example.com"],
+    "max_concurrency": 2,
+    "domain": {
+      "path": "/v1/domains/reputation",
+      "body_field": "domains",
+      "mapping": {
+        "array_path": "results",
+        "indicator_value_path": "domain",
+        "verdict_path": "verdict",
+        "score_path": "score"
+      }
+    }
+  },
+  "block_labels": ["malicious", "suspicious"],
+  "min_malicious_score_to_block": 0.5
+}

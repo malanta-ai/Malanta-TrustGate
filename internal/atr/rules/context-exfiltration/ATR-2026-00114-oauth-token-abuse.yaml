@@ -1,0 +1,30 @@
+id: ATR-2026-00114
+title: atr-b64:T0F1dGggYW5kIEFQSSBUb2tlbiBJbnRlcmNlcHRpb24=
+description: atr-b64:RGV0ZWN0cyBwYXR0ZXJucyBpbmRpY2F0aW5nIE9BdXRoIHRva2VuIGludGVyY2VwdGlvbiwgQVBJIGtleSBmb3J3YXJkaW5nLCBvcgphdXRob3JpemF0aW9uIGhlYWRlciB0aGVmdC4gQXR0YWNrZXJzIG1heSBpbnN0cnVjdCBhZ2VudHMgdG8gY2FwdHVyZSBiZWFyZXIgdG9rZW5zLApyZWZyZXNoIHRva2Vucywgb3IgY2xpZW50IHNlY3JldHMgYW5kIHJlZGlyZWN0IHRoZW0gdG8gYXR0YWNrZXItY29udHJvbGxlZCBlbmRwb2ludHMuClRoaXMgaW5jbHVkZXMgc3VzcGljaW91cyByZWRpcmVjdF91cmkgbWFuaXB1bGF0aW9uIGluIE9BdXRoIGZsb3dzIGFuZCBidWxrIHRva2VuCmV4dHJhY3Rpb24gZnJvbSBhZ2VudCBjb250ZXh0Lg==
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: mcp
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OnNlbmR8Zm9yd2FyZHxwb3N0fHRyYW5zbWl0fGV4ZmlsKVxzKy4qKD86YWNjZXNzX3Rva2VufHJlZnJlc2hfdG9rZW58YmVhcmVyfGFwaVtfXHNdP2tleXxhdXRoW19cc10/dG9rZW4p
+    description: atr-b64:Rm9yd2FyZGluZyBvciB0cmFuc21pdHRpbmcgdG9rZW5zIHRvIGFuIGV4dGVybmFsIGRlc3RpbmF0aW9u
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKXJlZGlyZWN0X3VyaVxzKj1ccypodHRwcz86Ly8oPyFsb2NhbGhvc3R8MTI3XC4wXC4wXC4xKVteXHNdKg==
+    description: atr-b64:T0F1dGggcmVkaXJlY3RfdXJpIHBvaW50aW5nIHRvIGEgbm9uLWxvY2FsIGV4dGVybmFsIGRvbWFpbg==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmV4dHJhY3R8Y2FwdHVyZXxpbnRlcmNlcHR8bG9nfGR1bXApXHMrLiooPzpBdXRob3JpemF0aW9ufEJlYXJlcilccysoPzpoZWFkZXJ8dG9rZW4p
+    description: atr-b64:SW50ZXJjZXB0aW5nIG9yIGV4dHJhY3RpbmcgQXV0aG9yaXphdGlvbiBoZWFkZXJz
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKWNsaWVudF9zZWNyZXRccypbPTpdXHMqWyciXT9bYS16QS1aMC05Xy1dezEwLH0=
+    description: atr-b64:T0F1dGggY2xpZW50X3NlY3JldCBleHBvc2VkIGluIHBsYWluIHRleHQ=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKWdyYW50X3R5cGVccyo9XHMqYXV0aG9yaXphdGlvbl9jb2RlLipyZWRpcmVjdF91cmlccyo9fHJlZGlyZWN0X3VyaVxzKj0uKmdyYW50X3R5cGVccyo9XHMqYXV0aG9yaXphdGlvbl9jb2Rl
+    description: atr-b64:T0F1dGggYXV0aG9yaXphdGlvbiBjb2RlIGZsb3cgd2l0aCBleHBsaWNpdCByZWRpcmVjdCwgcG90ZW50aWFsIHRva2VuIHRoZWZ0
+  condition: any

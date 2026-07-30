@@ -1,0 +1,21 @@
+title: "atr-b64:T3V0Ym91bmQgRXhmaWx0cmF0aW9uIFNoYXBlIHZpYSBjdXJsIC8gd2dldCBQT1NU"
+id: TRUSTGATE-SHELL-005
+description: "atr-b64:RGV0ZWN0cyBzaGVsbCBjb21tYW5kcyB0aGF0IFBPU1QgdGhlIGNvbnRlbnRzIG9mIGFuIFNTSCBrZXksIEFXUyBjcmVkZW50aWFscyBmaWxlLCBzaGVsbCBoaXN0b3J5LCBlbnYgZHVtcCwgb3Igb3RoZXIgc2Vuc2l0aXZlIGJ5dGUgc291cmNlIHRvIGFuIEhUVFAgZW5kcG9pbnQgdmlhIGN1cmwgb3Igd2dldC4gVGhpcyBpcyB0aGUgY2Fub25pY2FsIGV4ZmlsdHJhdGlvbiBzaGFwZTsgZXZlbiBsZWdpdGltYXRlIGRpYWdub3N0aWMgdXBsb2FkcyBkbyBub3QgZW1iZWQgY3JlZGVudGlhbC1iZWFyaW5nIGZpbGUgY29udGVudHMgaW5saW5lIGluIGEgUE9TVCBib2R5Lg=="
+severity: critical
+tags:
+  category: context-exfiltration
+detection:
+  condition: any
+  conditions:
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86Y3VybHx3Z2V0fGh0dHB8aHR0cGllKVxiW158OyZcbl0qPyg/Oi1YXHMrUE9TVHwtLWRhdGF8LS1kYXRhLWJpbmFyeXwtLWRhdGEtcmF3fC1kXGJ8LUZcYnwtLWZvcm0pW158OyZcbl0qP1wkXChbXildKlxiKD86Y2F0fGhlYWR8dGFpbHxsZXNzfG1vcmV8YmF0fHh4ZHxvZClcYlteKV0qKD86aWRfcnNhfGlkX2VkMjU1MTl8aWRfZWNkc2F8XC5hd3MvY3JlZGVudGlhbHN8XC5hd3MvY29uZmlnfGJhc2hfaGlzdG9yeXx6c2hfaGlzdG9yeXxcLnNzaC98Y3JlZGVudGlhbHM/fHNlY3JldHx0b2tlbnxhcGlbLV9dP2tleXxwYXNzd29yZCk="
+      description: "atr-b64:Y3VybC93Z2V0IFBPU1Qgd2l0aCBjb21tYW5kIHN1YnN0aXR1dGlvbiBjYXB0dXJpbmcgYSBzZW5zaXRpdmUgZmlsZQ=="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86Y3VybHx3Z2V0fGh0dHB8aHR0cGllKVxiW158OyZcbl0qPyg/Oi1GfC0tZm9ybSlccytbIiddP1xTKz1AKD86fnxcJEhPTUV8Lyg/OnJvb3R8aG9tZS9bXi9cc10rKSk/L1wuKD86c3NoL2lkXyg/OnJzYXxlZDI1NTE5fGVjZHNhfGRzYSl8YXdzL2NyZWRlbnRpYWxzfGF3cy9jb25maWd8YmFzaF9oaXN0b3J5fHpzaF9oaXN0b3J5fGhpc3Rvcnkp"
+      description: "atr-b64:Y3VybCBtdWx0aXBhcnQgZm9ybSB1cGxvYWQgb2YgYSBjcmVkZW50aWFsIGZpbGU="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxibmNcYltefDsmXG5dKj9ccytcUytccytcZCtccyo8XHMqKD86fnxcJEhPTUV8Lyg/OnJvb3R8aG9tZS9bXi9cc10rKSk/L1wuKD86c3NoL2lkXyg/OnJzYXxlZDI1NTE5fGVjZHNhfGRzYSl8YXdzL2NyZWRlbnRpYWxzfGJhc2hfaGlzdG9yeXx6c2hfaGlzdG9yeSk="
+      description: "atr-b64:bmV0Y2F0IGV4ZmlsdHJhdGlvbiBvZiBhIGNyZWRlbnRpYWwgZmlsZQ=="

@@ -1,0 +1,21 @@
+title: "atr-b64:RHJpdmUtYnkgSW5zdGFsbCBQaXBlbGluZSAoY3VybHxzaCk="
+id: TRUSTGATE-SHELL-020
+description: "atr-b64:RGV0ZWN0cyB0aGUgY3VybC1vci13Z2V0IHBpcGVkIHRvIGEgc2hlbGwgaW50ZXJwcmV0ZXIgcGF0dGVybi4gU2V2ZXJpdHkgbWVkaXVtIGJlY2F1c2UgbGVnaXRpbWF0ZSBpbnN0YWxsZXJzIHdpZGVseSB1c2UgdGhpcyBzaGFwZTsgbG9nZ2VkIGZvciBvcGVyYXRvciB2aXNpYmlsaXR5LCBkZWZlcnJlZCB0byB0aGUgTWFsYW50YSBkb21haW4gY2FzY2FkZSBmb3IgdGhlIGRlbnkgZGVjaXNpb24gYmFzZWQgb24gdGhlIGFjdHVhbCBob3N0Lg=="
+severity: medium
+tags:
+  category: excessive-autonomy
+detection:
+  condition: any
+  conditions:
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86Y3VybHx3Z2V0fGZldGNofGFyaWEyYylcYltefDsmXG5dezAsMjAwfVx8XHMqKD86c2h8YmFzaHx6c2h8ZGFzaHxrc2h8Y21kKVxi"
+      description: "atr-b64:Y3VybC93Z2V0IHBpcGVkIHRvIHNoZWxsIGludGVycHJldGVy"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86YmFzaHxzaHx6c2h8c291cmNlfFwuKVxiXHMrPFwoXHMqKD86Y3VybHx3Z2V0fGZldGNoKVxi"
+      description: "atr-b64:YmFzaCA8KCBjdXJsIC4uLiApIHByb2Nlc3Mgc3Vic3RpdHV0aW9uIGRvd25sb2Fk"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86aXdyfGludm9rZS13ZWJyZXF1ZXN0fGlybXxpbnZva2UtcmVzdG1ldGhvZClcYltefDsmXG5dezAsMjAwfVx8XHMqKD86aWV4fGludm9rZS1leHByZXNzaW9uKVxi"
+      description: "atr-b64:UG93ZXJTaGVsbCBJV1IgfCBJRVggY3JhZGxl"

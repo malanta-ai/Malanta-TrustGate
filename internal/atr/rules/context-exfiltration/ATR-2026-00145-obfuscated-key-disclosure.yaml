@@ -1,0 +1,14 @@
+id: ATR-2026-00145
+title: atr-b64:T2JmdXNjYXRlZCBBUEkgS2V5IERpc2Nsb3N1cmU=
+description: atr-b64:RGV0ZWN0cyBhdHRlbXB0cyB0byBsZWFrIEFQSSBrZXlzIHdyYXBwZWQgaW4gZmFrZSBlbmNyeXB0aW9uL2VuY29kaW5nLCBlLmcuICJBRVMyNTYoc2stcHJvai1yZWFsLWtleSkiLiBUaGUgYXR0YWNrZXIgaG9wZXMgdGhlIGFnZW50IHRyZWF0cyB0aGUgImVuY3J5cHRlZCIgdmFsdWUgYXMgc2FmZSB0byB0cmFuc21pdCB3aGlsZSBpdCBjb250YWlucyB0aGUgcmVhbCBrZXkuIENyeXN0YWxsaXplZCBmcm9tIDI5IGFkdmVyc2FyaWFsIHNhbXBsZXMu
+severity: critical
+tags:
+  category: context-exfiltration
+  scan_target: mcp
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmVuY3J5cHRlZHxjaXBoZXJ0ZXh0fGVuY29kZWR8aGFzaGVkfHdyYXBwZWR8b2JmdXNjYXRlZClccyooPzp2ZXJzaW9ufGZvcm18a2V5fHZhbHVlfGNvbnRlbnR8cmVwcmVzZW50YXRpb258Y3JlZGVudGlhbHM/KT9ccyooPzppc3xyZWFkcz98Onw9KVxzKig/OkFFU3xSU0F8REVTfFNIQXxITUFDfEJBU0U2NHxST1QxMylcZCpccypcKFxzKig/OnNrLXxnaHBffGdob198Z2xwYXQtfHhveGItfEFLSUF8YXBpW18tXT9rZXkp
+    description: atr-b64:RmFrZSBlbmNyeXB0aW9uIHdyYXBwaW5nIHJlYWwgQVBJIGtleSBwcmVmaXhlcw==
+  condition: any

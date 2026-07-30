@@ -1,0 +1,28 @@
+{
+  "provider": "generic",
+  "generic_provider": {
+    "name": "virustotal",
+    "base_url": "https://www.virustotal.com/api/v3",
+    "mode": "single",
+    "method": "GET",
+    "auth": {
+      "header": "x-apikey",
+      "env_var": "VIRUSTOTAL_API_KEY"
+    },
+    "allowed_hosts": ["www.virustotal.com"],
+    "max_concurrency": 2,
+    "domain": {
+      "path_template": "/domains/{domain}",
+      "mapping": {
+        "score_path": "data.attributes.last_analysis_stats.malicious"
+      }
+    },
+    "ip": {
+      "path_template": "/ip_addresses/{ip}",
+      "mapping": {
+        "score_path": "data.attributes.last_analysis_stats.malicious"
+      }
+    }
+  },
+  "min_malicious_score_to_block": 3
+}

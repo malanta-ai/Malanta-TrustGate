@@ -1,0 +1,30 @@
+id: ATR-2026-01890
+title: atr-b64:SW5qZWN0ZWQgQ29kZSDigJQgTG9jYWwgRmlsZSBFeGZpbHRyYXRpb24gdG8gYSBSZW1vdGUgRW5kcG9pbnQ=
+description: atr-b64:RGV0ZWN0cyBpbmRpcmVjdC1pbmplY3Rpb24gcGF5bG9hZHMgKEJJUElBIGNvZGUgY2xhc3MpIHRoYXQgY29lcmNlIHRoZSBhZ2VudCB0byBlbWJlZCBhIGNvZGUgc25pcHBldCB3aGljaCByZWFkcyBhIGxvY2FsIGZpbGUgYW5kIHNoaXBzIGl0cyByYXcgYnl0ZXMgdG8gYW4gYXR0YWNrZXItY29udHJvbGxlZCBlbmRwb2ludCB2aWEgSFRUUCBQT1NULCBGVFAgU1RPUiwgcmF3IHNvY2tldCwgb3IgQmx1ZXRvb3RoLiBJbnZhcmlhbnQ6IGEgbG9jYWwgcmVhZCAob3BlbigpLy5yZWFkKCkvLnRvYnl0ZXMoKS9yLmNvbnRlbnQpIGJvdW5kIHRvIGEgcmVtb3RlIHNpbmsgaW4gdGhlIHNhbWUgc3RhdGVtZW50Lg==
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: llm_io
+detection:
+  conditions:
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKXJlcXVlc3RzXC5wb3N0XChbXHNcU117MCw4MH1cYmRhdGFccyo9XHMqXHcrXC4oPzpyZWFkfHRvYnl0ZXMpXChcKQ==
+    description: atr-b64:QklQSUEgZmlsZS1leGZpbHRyYXRpb24gaW52YXJpYW50ICMx
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKXJlcXVlc3RzXC5wb3N0XChbXHNcU117MCw4MH1cYmZpbGVzXHMqPVxzKlx7W1xzXFNdezAsODB9KD86b3BlblwofFwuY29udGVudCk=
+    description: atr-b64:QklQSUEgZmlsZS1leGZpbHRyYXRpb24gaW52YXJpYW50ICMy
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKVxiKD86c3RvcmJpbmFyeXxzZW5kYWxsKVwoW15cbl17MCw0MH0oPzpcLmNvbnRlbnR8XC5yZWFkXChcKXxcYmRhdGFcYnxvcGVuXCgp
+    description: atr-b64:QklQSUEgZmlsZS1leGZpbHRyYXRpb24gaW52YXJpYW50ICMz
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKVxiY29ublwucmVxdWVzdFwoXHMqW1wiJ11QT1NUW1wiJ11bXlxuXXswLDQwfVwucmVhZFwoXCk=
+    description: atr-b64:QklQSUEgZmlsZS1leGZpbHRyYXRpb24gaW52YXJpYW50ICM0
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKVxiYnRfc29ja1wuc2VuZFwoXHMqclwuY29udGVudFxzKlwp
+    description: atr-b64:QklQSUEgZmlsZS1leGZpbHRyYXRpb24gaW52YXJpYW50ICM1
+  condition: any

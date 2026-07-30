@@ -1,0 +1,30 @@
+id: ATR-2026-00115
+title: atr-b64:QnVsayBFbnZpcm9ubWVudCBWYXJpYWJsZSBIYXJ2ZXN0aW5nIGFuZCBFeGZpbHRyYXRpb24=
+description: atr-b64:RGV0ZWN0cyB0b29scyBvciBhZ2VudCBpbnN0cnVjdGlvbnMgdGhhdCBwZXJmb3JtIGJ1bGsgZXh0cmFjdGlvbiBvZiBlbnZpcm9ubWVudAp2YXJpYWJsZXMgYW5kIGNvbWJpbmUgaXQgd2l0aCBuZXR3b3JrIGV4ZmlsdHJhdGlvbi4gRW52aXJvbm1lbnQgdmFyaWFibGVzIGNvbW1vbmx5CmhvbGQgQVBJIGtleXMsIGRhdGFiYXNlIGNyZWRlbnRpYWxzLCBhbmQgc2VydmljZSB0b2tlbnMuIEFuIGF0dGFja2VyIGdhaW5pbmcgYWNjZXNzCnRvIHRoZSBmdWxsIGVudmlyb25tZW50IGNhbiBjb21wcm9taXNlIGV2ZXJ5IGNvbm5lY3RlZCBzZXJ2aWNlLiBUaGlzIHJ1bGUgdGFyZ2V0cwpib3RoIHRoZSBoYXJ2ZXN0aW5nIHN0ZXAgKHByaW50ZW52LCBwcm9jZXNzLmVudiwgb3MuZW52aXJvbikgYW5kIHRoZSBleGZpbHRyYXRpb24Kc3RlcCAoY3VybCwgZmV0Y2gsIGh0dHAgY2FsbHMpIHdoZW4gdGhleSBhcHBlYXIgdG9nZXRoZXIgb3IgaW5kaXZpZHVhbGx5Lg==
+severity: critical
+tags:
+  category: context-exfiltration
+  scan_target: mcp
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OnByaW50ZW52fC91c3IvYmluL2VudilccyooPzpcfHw+fCR8XHMqJCk=
+    description: atr-b64:UnVubmluZyBwcmludGVudiB0byBkdW1wIGFsbCBlbnZpcm9ubWVudCB2YXJpYWJsZXM=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OnByb2Nlc3NcLmVudnxvc1wuZW52aXJvbnxTeXN0ZW1cLmdldGVudikoPyFcW3xcLnxcdyk=
+    description: atr-b64:QWNjZXNzaW5nIHRoZSBlbnRpcmUgZW52aXJvbm1lbnQgb2JqZWN0IHJhdGhlciB0aGFuIGEgc3BlY2lmaWMgdmFyaWFibGU=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/Ol58XHMpZW52XHMqKD86XHx8Pnw7fCYmfCQp
+    description: atr-b64:UnVubmluZyBiYXJlIGVudiBjb21tYW5kIHRvIGxpc3QgYWxsIGVudmlyb25tZW50IHZhcmlhYmxlcw==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmNhdHxyZWFkfGxvYWR8cGFyc2UpXHMrLipcLmVudig/OlxzfCR8XC4oPzpsb2NhbHxwcm9kfGRldikp
+    description: atr-b64:UmVhZGluZyAuZW52IGZpbGVzIHdoaWNoIGNvbnRhaW4gYXBwbGljYXRpb24gc2VjcmV0cw==
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmRvdGVudnxsb2FkX2RvdGVudnxjb25maWdcKFwpKS4qKD86Y3VybHxmZXRjaHxodHRwfHJlcXVlc3R8cG9zdHxzZW5kfGF4aW9zKQ==
+    description: atr-b64:TG9hZGluZyBkb3RlbnYgY29tYmluZWQgd2l0aCBuZXR3b3JrIGNhbGwgaW5kaWNhdGluZyBleGZpbHRyYXRpb24=
+  condition: any

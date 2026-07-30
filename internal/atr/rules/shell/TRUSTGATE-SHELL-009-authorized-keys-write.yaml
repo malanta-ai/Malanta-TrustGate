@@ -1,0 +1,21 @@
+title: "atr-b64:U1NIIGF1dGhvcml6ZWRfa2V5cyBXcml0ZQ=="
+id: TRUSTGATE-SHELL-009
+description: "atr-b64:RGV0ZWN0cyBzaGVsbC1sZXZlbCB3cml0ZXMgKD4sID4+KSB0byBhbiBTU0ggYXV0aG9yaXplZF9rZXlzIGZpbGUuIEVzdGFibGlzaGVzIHBlcnNpc3RlbnQgYXR0YWNrZXIgU1NIIGFjY2Vzczsgbm8gYmVuaWduIGFnZW50IHdvcmtmbG93IG5lZWRzIHRoaXMu"
+severity: critical
+tags:
+  category: privilege-escalation
+detection:
+  condition: any
+  conditions:
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKT4+P1xzKig/On58XCRIT01FfC8oPzpyb290fGhvbWUvW14vXHNdKykpPy9cLnNzaC9hdXRob3JpemVkX2tleXMoPzpbXmEtejAtOV8uXC1dfCQp"
+      description: "atr-b64:U2hlbGwgcmVkaXJlY3QgaW50byB+Ly5zc2gvYXV0aG9yaXplZF9rZXlz"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86ZWNob3xwcmludGZ8Y2F0fHRlZSlcYltefDsmXG5dKj9cYnNzaC0oPzpyc2F8ZWQyNTUxOXxlY2RzYSlccytbQS1aYS16MC05Ky89XXs0MCx9W158OyZcbl0qPz4+P1xzKlxTKmF1dGhvcml6ZWRfa2V5cw=="
+      description: "atr-b64:SW5saW5lIHB1YmxpYyBrZXkgcGlwZWQgaW50byBhdXRob3JpemVkX2tleXM="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxidGVlXGJbXnw7JlxuXSo/XHMoPzp+fFwkSE9NRXwvKD86cm9vdHxob21lL1teL1xzXSspKT8vXC5zc2gvYXV0aG9yaXplZF9rZXlzXGI="
+      description: "atr-b64:dGVlIHRvIGF1dGhvcml6ZWRfa2V5cyBwYXRo"

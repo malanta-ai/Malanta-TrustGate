@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "HOME_PLACEHOLDER/.local/bin/trustgate-before-promptEXT_PLACEHOLDER",
+        "timeout": 20,
+        "failClosed": false
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "HOME_PLACEHOLDER/.local/bin/trustgate-before-shellEXT_PLACEHOLDER",
+        "timeout": 20,
+        "failClosed": true
+      }
+    ],
+    "beforeMCPExecution": [
+      {
+        "command": "HOME_PLACEHOLDER/.local/bin/trustgate-before-mcpEXT_PLACEHOLDER",
+        "timeout": 20,
+        "failClosed": true
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "HOME_PLACEHOLDER/.local/bin/trustgate-before-read-fileEXT_PLACEHOLDER",
+        "timeout": 20,
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "HOME_PLACEHOLDER/.local/bin/trustgate-before-tool-useEXT_PLACEHOLDER",
+        "timeout": 20,
+        "failClosed": true
+      }
+    ]
+  }
+}

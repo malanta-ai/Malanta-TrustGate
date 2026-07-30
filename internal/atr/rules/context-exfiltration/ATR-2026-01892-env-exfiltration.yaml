@@ -1,0 +1,14 @@
+id: ATR-2026-01892
+title: atr-b64:SW5qZWN0ZWQgQ29kZSDigJQgRW52aXJvbm1lbnQtVmFyaWFibGUgRXhmaWx0cmF0aW9u
+description: atr-b64:RGV0ZWN0cyBpbmplY3RlZCBjb2RlIHRoYXQgcmVhZHMgcHJvY2VzcyBlbnZpcm9ubWVudCB2YXJpYWJsZXMgdmlhIHN1YnNjcmlwdCBhY2Nlc3MgKG9zLmVudmlyb25bLi4uXSkgYW5kIFBPU1RzIHRoZW0gdG8gYSByZW1vdGUgc2VydmVyLiBFbnZpcm9ubWVudCB2YXJpYWJsZXMgcm91dGluZWx5IGhvbGQgQVBJIGtleXMsIHRva2VucyBhbmQgcGF0aHMsIHNvIHRoaXMgaXMgYSBkaXJlY3Qgc2VjcmV0LWV4ZmlsdHJhdGlvbiB2ZWN0b3IuIERpc3Rpbmd1aXNoZWQgZnJvbSBiZW5pZ24gb3MuZW52aXJvbi5nZXQoKSByZWFkcyBieSByZXF1aXJpbmcgdGhlIHJlbW90ZSBQT1NUIHNpbmsu
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: llm_io
+detection:
+  conditions:
+  - field: user_input
+    operator: regex
+    value: atr-b64:KD9pKW9zXC5lbnZpcm9uXFtbXHNcU117MCw2MH1yZXF1ZXN0c1wucG9zdFwo
+    description: atr-b64:QklQSUEgZW52LWV4ZmlsdHJhdGlvbiBpbnZhcmlhbnQgIzE=
+  condition: any

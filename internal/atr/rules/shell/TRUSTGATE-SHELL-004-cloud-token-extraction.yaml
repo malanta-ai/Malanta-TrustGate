@@ -1,0 +1,33 @@
+title: "atr-b64:Q2xvdWQgVG9rZW4gLyBDcmVkZW50aWFsIEVudW1lcmF0aW9u"
+id: TRUSTGATE-SHELL-004
+description: "atr-b64:RGV0ZWN0cyBDTEkgY29tbWFuZHMgdGhhdCBwcmludCBvciBlbnVtZXJhdGUgY2xvdWQgYmVhcmVyIHRva2VucyBhbmQgYWNjZXNzIGtleXM6IGBnY2xvdWQgYXV0aCBwcmludC1hY2Nlc3MtdG9rZW5gLCBgYXdzIGlhbSBsaXN0LWFjY2Vzcy1rZXlzYCwgYGF6IGFjY291bnQgZ2V0LWFjY2Vzcy10b2tlbmAsIGt1YmVjdGwgc2VjcmV0IGVudW1lcmF0aW9uLiBUaGVzZSBoYXZlIG5vIGJlbmlnbiBhZ2VudCB1c2UgY2FzZTsgdGhlIHRva2VuIC8ga2V5bGlzdCBpcyBlaXRoZXIgYmVpbmcgZXhmaWx0cmF0ZWQgb3IgdXNlZCBmb3IgbGF0ZXJhbCBtb3ZlbWVudC4="
+severity: critical
+tags:
+  category: context-exfiltration
+detection:
+  condition: any
+  conditions:
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiZ2Nsb3VkXHMrYXV0aFxzKyg/OnByaW50LWFjY2Vzcy10b2tlbnxwcmludC1pZGVudGl0eS10b2tlbnxhcHBsaWNhdGlvbi1kZWZhdWx0XHMrcHJpbnQtYWNjZXNzLXRva2VuKVxi"
+      description: "atr-b64:Z2Nsb3VkIGF1dGggcHJpbnQtYWNjZXNzLXRva2VuIChPQXV0aCB0b2tlbiB0byBzdGRvdXQp"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiYXdzXHMraWFtXHMrKD86bGlzdC1hY2Nlc3Mta2V5c3xnZXQtYWNjZXNzLWtleS1sYXN0LXVzZWR8bGlzdC11c2VyLXRhZ3N8bGlzdC1hdHRhY2hlZC11c2VyLXBvbGljaWVzKVxi"
+      description: "atr-b64:QVdTIElBTSBjcmVkZW50aWFsIGVudW1lcmF0aW9u"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiYXpccythY2NvdW50XHMrZ2V0LWFjY2Vzcy10b2tlblxi"
+      description: "atr-b64:QXp1cmUgQ0xJIGJlYXJlciB0b2tlbiBleHRyYWN0aW9u"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxia3ViZWN0bFxzKyg/Oi1uXHMrXFMrXHMrKT9nZXRccytzZWNyZXQoPzpzKT9cYltefDsmXG5dKj9ccysoPzotLWFsbC1uYW1lc3BhY2VzfC1BKVxi"
+      description: "atr-b64:a3ViZWN0bCBnZXQgc2VjcmV0cyAtLWFsbC1uYW1lc3BhY2Vz"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxia3ViZWN0bFxzKyg/Oi1uXHMrXFMrXHMrKT9nZXRccytzZWNyZXRccytcUytccystb1xzKyg/OnlhbWx8anNvbnxqc29ucGF0aCk="
+      description: "atr-b64:a3ViZWN0bCBnZXQgc2VjcmV0IDxuYW1lPiAtbyB5YW1sL2pzb24vanNvbnBhdGggKGV4dHJhY3RzIHNlY3JldCBtYXRlcmlhbCk="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxidmF1bHRccysoPzpyZWFkfGt2XHMrZ2V0KVxiW158OyZcbl0qPyg/OnNlY3JldC98a3YvKQ=="
+      description: "atr-b64:dmF1bHQgcmVhZCBvZiBhIHNlY3JldCBwYXRo"

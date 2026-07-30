@@ -1,0 +1,83 @@
+# Release pipeline for Malanta TrustGate.
+#
+# Triggered by pushing a "v*" tag (e.g. v0.1.0). Runs GoReleaser
+# (.goreleaser.yaml) to cross-compile the five hook binaries + the
+# trustgate CLI, publish them as a GitHub Release, and cosign-sign the
+# checksums file with keyless (Sigstore) signing so
+# hooks/scripts/lib/ensure-binary.sh (the marketplace plugin's binary
+# resolver) can verify what it downloads — see docs/plugin.md.
+#
+# id-token: write is required for cosign's GitHub Actions OIDC identity;
+# contents: write is required for GoReleaser to create the release and
+# upload assets.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# Top-level default is least-privilege (read-only); the privileged publish
+# job opts UP to the write/id-token scopes it needs.
+permissions:
+  contents: read
+
+jobs:
+  # Verification runs in a SEPARATE, unprivileged job. A red tree
+  # can never reach the privileged publish job, and the token in scope while
+  # tests (which execute arbitrary module/test code) run is read-only.
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Set up Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.26.x"
+      - name: Run tests before releasing
+        # A tag pointing at a red build should never produce a release.
+        run: go test -count=1 ./...
+
+  goreleaser:
+    needs: verify
+    runs-on: ubuntu-latest
+    # id-token: write is required for cosign's GitHub Actions OIDC identity;
+    # contents: write is required for GoReleaser to create the release and
+    # upload assets. Scoped to THIS job only, after verification passed.
+    permissions:
+      contents: write
+      id-token: write
+    # Gate publishing behind a protected GitHub Environment.
+    # Configure the "release" environment in repo settings with required
+    # reviewers and/or a tag/branch deployment restriction so producing a
+    # signed release requires a human approval, not just a pushed tag.
+    environment: release
+    steps:
+      - name: Checkout
+        # All third-party actions pinned to a commit SHA (tag in a
+        # trailing comment). Bump SHA + comment together.
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          # GoReleaser's changelog generation needs full history to walk
+          # commits since the previous tag.
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.26.x"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6
+        with:
+          distribution: goreleaser
+          version: "~> 2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

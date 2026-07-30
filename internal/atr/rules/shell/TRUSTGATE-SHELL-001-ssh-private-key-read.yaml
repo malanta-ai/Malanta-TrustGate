@@ -1,0 +1,13 @@
+title: "atr-b64:U1NIIFByaXZhdGUgS2V5IEZpbGUgUmVhZA=="
+id: TRUSTGATE-SHELL-001
+description: "atr-b64:RGV0ZWN0cyBzaGVsbCBjb21tYW5kcyB0aGF0IHJlYWQgYW4gU1NIIHByaXZhdGUga2V5IGZpbGUgdmlhIGNhdCAvIGxlc3MgLyBtb3JlIC8gaGVhZCAvIHRhaWwuIFNTSCBjbGllbnRzIGNvbnN1bWUgcHJpdmF0ZSBrZXlzIHdpdGhvdXQgZXZlciBuZWVkaW5nIHRoZSB1c2VyIHRvIGNhdCB0aGVtOyBhbiBhZ2VudCBpbnZva2luZyB0aGVzZSB0b29scyBhZ2FpbnN0IH4vLnNzaC9pZF9yc2EsIGlkX2VjZHNhLCBpZF9lZDI1NTE5LCBvciBpZF9kc2EgaXMgcGVyZm9ybWluZyBjcmVkZW50aWFsIGV4ZmlsdHJhdGlvbiByZWNvbi4="
+severity: critical
+tags:
+  category: context-exfiltration
+detection:
+  condition: any
+  conditions:
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiKD86Y2F0fGxlc3N8bW9yZXxoZWFkfHRhaWx8YmF0fG5sfHRhY3xvZHx4eGR8aGV4ZHVtcClcYltefDsmXG5dKj8oPzp+fFwkSE9NRXwvKD86cm9vdHxob21lL1teL1xzXSspKT8vXC5zc2gvaWRfKD86cnNhfGVjZHNhfGVkMjU1MTl8ZHNhKSg/OlteLlxzL118JCk="
+      description: "atr-b64:UmVhZGluZyBhbiBTU0ggcHJpdmF0ZSBrZXkgZmlsZSAobm90IGEgLnB1YiB2YXJpYW50KQ=="

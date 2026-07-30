@@ -1,0 +1,141 @@
+# GoReleaser config for Malanta TrustGate.
+#
+# Builds the five hook binaries plus the trustgate admin CLI for
+# darwin/linux (amd64+arm64) and windows (amd64), uploads them as raw
+# binaries (not tarballed — see archives.format below) named
+# "<binary>_<os>_<arch>[.exe]", and signs the checksums file with cosign
+# keyless (Sigstore) signing so hooks/scripts/lib/ensure-binary.sh can
+# verify what it downloads. See docs/plugin.md's "Supply chain" section
+# for the full trust model and its known gaps.
+#
+# Triggered by .github/workflows/release.yml on every "v*" tag push.
+version: 2
+
+project_name: malanta-trustgate
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: trustgate-before-shell
+    main: ./cmd/trustgate-before-shell
+    binary: trustgate-before-shell
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags: ["-s -w"]
+
+  - id: trustgate-before-mcp
+    main: ./cmd/trustgate-before-mcp
+    binary: trustgate-before-mcp
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags: ["-s -w"]
+
+  - id: trustgate-before-read-file
+    main: ./cmd/trustgate-before-read-file
+    binary: trustgate-before-read-file
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags: ["-s -w"]
+
+  - id: trustgate-before-tool-use
+    main: ./cmd/trustgate-before-tool-use
+    binary: trustgate-before-tool-use
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags: ["-s -w"]
+
+  # Built and released even though beforeSubmitPrompt is not wired in
+  # hooks.json/hooks/hooks.json (see AGENTS.md §1) — keeps this deferred
+  # capability available to anyone who wants to enable it manually.
+  - id: trustgate-before-prompt
+    main: ./cmd/trustgate-before-prompt
+    binary: trustgate-before-prompt
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags: ["-s -w"]
+
+  - id: trustgate
+    main: ./cmd/trustgate
+    binary: trustgate
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags: ["-s -w -X main.version={{ .Version }}"]
+
+# format: binary uploads each binary directly to the release (no
+# tarball/zip) so hooks/scripts/lib/ensure-binary.sh can curl it straight
+# by name. name_template intentionally drops {{.Version}} (GoReleaser's
+# default for binary-format archives) since the version already lives in
+# the release tag path (releases/download/v{version}/...) — the wrapper
+# script doesn't need it repeated in the filename.
+archives:
+  - formats: [binary]
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+# Keyless (Sigstore) signing of the checksums file via cosign v3's bundle
+# format. Requires `id-token: write` permission in the release workflow
+# (GitHub Actions OIDC) and the cosign CLI installed on the runner — see
+# .github/workflows/release.yml.
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: checksum
+    output: true
+
+release:
+  github:
+    owner: malanta-ai
+    name: Malanta-TrustGate
+  draft: false
+  prerelease: auto
+  # LIC-001: ship the license + third-party attribution alongside every
+  # release. archives use format:binary (raw binaries, no tarball to embed
+  # notices in), so attach them as release assets instead.
+  extra_files:
+    - glob: ./LICENSE
+    - glob: ./THIRD_PARTY_NOTICES.md
+  header: |
+    See [CHANGELOG.md](https://github.com/malanta-ai/Malanta-TrustGate/blob/main/CHANGELOG.md) for the human-curated summary of what changed.
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"

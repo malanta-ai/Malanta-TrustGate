@@ -1,0 +1,30 @@
+id: ATR-2026-00706
+title: atr-b64:SW5kaXJlY3QgUEkg4oCUIFBoeXNpY2FsIC8gQmlvbWV0cmljIE1lZGlhIEV4ZmlsdHJhdGlvbiB2aWEgQWdlbnQ=
+description: atr-b64:RGV0ZWN0cyBpbmRpcmVjdCBwcm9tcHQgaW5qZWN0aW9uIGluc3RydWN0aW9ucyB0aGF0IGRpcmVjdCBhbiBhZ2VudCB0byBwZXJmb3JtIHBoeXNpY2FsIG9yIGJpb21ldHJpYyBkYXRhIGV4ZmlsdHJhdGlvbjogZ2VuZXJhdGluZyBkZWVwZmFrZSBhdWRpbyBmcm9tIHJlY29yZGVkIHZvaWNlIHNhbXBsZXMsIGNvbnZlcnRpbmcgYmlvbWV0cmljIHJlY29yZGluZ3MsIGFuZCBleGZpbHRyYXRpbmcgdGhlIHJlc3VsdC4gIEFsc28gY292ZXJzIGluc3RydWN0aW9ucyB0byByZXRyaWV2ZSBwaHlzaWNhbCBpZGVudGl0eSBkb2N1bWVudHMgKElEIHNjYW5zLCBwYXNzcG9ydCBwaG90b3MpLiBTb3VyY2U6IGluZGlyZWN0LXBpLWV4ZmlsLXBoeXNpY2FsLWNhcnJpZXIu
+severity: critical
+tags:
+  category: context-exfiltration
+  scan_target: tool_output
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmdlbmVyYXRlfGNyZWF0ZXxwcm9kdWNlKVxzKyg/OmFuP1xzKyk/KD86YXVkaW9ccyspP2RlZXBmYWtlXHMrKD86dXNpbmd8ZnJvbXx3aXRoKVxzKyg/Om15fHRoZSlccyt2b2ljZVtcc1xTXXswLDMwMH0oPzpzZW5kfGVtYWlsfGZvcndhcmR8c2hhcmV8dXBsb2FkKVxzKyg/OnRoZVxzKyk/KD86YXVkaW9ccyspPyg/OmZpbGV8ZGVlcGZha2V8cmVjb3JkaW5nKQ==
+    description: atr-b64:R2VuZXJhdGUgYXVkaW8gZGVlcGZha2UgZnJvbSB2b2ljZSArIGV4ZmlsIChjcm9zcy1zZW50ZW5jZSk=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmdlbmVyYXRlfGNyZWF0ZXxwcm9kdWNlKVxzKyg/OmFuP1xzKyk/KD86YXVkaW9ccyspP2RlZXBmYWtlXHMrKD86dXNpbmd8ZnJvbXx3aXRoKVteXG5dezAsMjAwfSg/OnNlbmR8ZW1haWx8Zm9yd2FyZHxzaGFyZXx1cGxvYWQp
+    description: atr-b64:R2VuZXJhdGUgZGVlcGZha2Ugd2l0aCBleGZpbCBkZXN0aW5hdGlvbiAoc2luZ2xlLWxpbmUp
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmNvbnZlcnR8cHJvY2Vzc3x0cmFuc2Zvcm0pXHMrKD86dGhlXHMrKT9hdWRpb1teLlxuXXswLDYwfSg/OlwvUmVjb3JkaW5nc1wvfFwubXA0fFwubXAzfFwud2F2fFwubTRhKVteLlxuXXswLDEwMH0oPzpzZW5kfGVtYWlsfGZvcndhcmR8c2hhcmUp
+    description: atr-b64:UHJvY2VzcyBhdWRpbyByZWNvcmRpbmcgdGhlbiBzZW5kIGV4ZmlsIGNoYWlu
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OnJldHJpZXZlfGdldHxmZXRjaHxzY2FufGNhcHR1cmUpXHMrKD86bXlccyspPyg/OklEfHBhc3Nwb3J0fGRyaXZlcig/OidzKT9ccytsaWNlbnNlfGlkZW50aXR5XHMrZG9jdW1lbnR8YmlvbWV0cmljXHMrZGF0YSlbXi5cbl17MCwxMDB9KD86c2VuZHxlbWFpbHxmb3J3YXJkfHNoYXJlKQ==
+    description: atr-b64:UmV0cmlldmUgaWRlbnRpdHkgZG9jdW1lbnQgYW5kIHNlbmQgZXhmaWw=
+  - field: content
+    operator: regex
+    value: atr-b64:KD9pKSg/OmNyZWF0ZXxtYWtlfGJ1aWxkKVxzKyg/OmFccyspP3ZvaWNlXHMrY2xvbmVbXi5cbl17MCwxMDB9KD86Zm9yd2FyZHxzZW5kfGVtYWlsfHNoYXJlfG91dHB1dClbXi5cbl17MCw4MH0oPzp0b3xhdHRhY2tlcik=
+    description: atr-b64:Q3JlYXRlIHZvaWNlIGNsb25lIHRoZW4gZm9yd2FyZC9zZW5k
+  condition: any

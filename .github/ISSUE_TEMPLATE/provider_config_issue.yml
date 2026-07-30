@@ -1,0 +1,38 @@
+name: Provider config issue (third-party vendor)
+description: A generic-adapter config for a specific vendor (e.g. VirusTotal) isn't working.
+labels: ["provider:third-party"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Vendor configs under the generic adapter are **community/best-effort** support (see [SUPPORT.md](../../SUPPORT.md)) — there's no SLA, and the fastest fix usually comes from someone who uses that vendor. We'll still try to help triage.
+
+  - type: input
+    id: vendor
+    attributes:
+      label: Vendor
+      placeholder: "e.g. VirusTotal"
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Your generic_provider config
+      description: Paste your config.json generic_provider block. Redact any API keys/env var VALUES (env var NAMES are fine).
+      render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened vs. what you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample-response
+    attributes:
+      label: Sample API response from the vendor (if you can share it)
+      description: Helps confirm whether the issue is the mapping config or the vendor's API shape changing. Redact any account-identifying data.

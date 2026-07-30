@@ -1,0 +1,8 @@
+{
+  "tool": "fetch",
+  "server": "browser",
+  "arguments": {
+    "url": "https://malware.example/api",
+    "headers": {"X-Source": "https://example.com"}
+  }
+}

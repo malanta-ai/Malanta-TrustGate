@@ -1,0 +1,21 @@
+# Minimal example of a bring-your-own ATR rule. Copy this file into your
+# TRUSTGATE_ATR_RULES_DIR, edit the id/title/pattern, and it will be loaded
+# alongside the embedded bundle. See README.md in this directory for the
+# routing rules (root-level files vs. a shell/ subdirectory) and the
+# allowed category list.
+id: EXAMPLE-INTERNAL-TOOL-TOKEN
+title: Internal deploy-tool token exposure
+description: >
+  Flags an internal deploy-tool bearer token pattern appearing in file
+  content or MCP tool arguments — replace the regex below with a pattern
+  distinctive to a credential format your organization actually uses.
+tags:
+  category: context-exfiltration
+detection:
+  condition: any
+  conditions:
+    - field: content
+      operator: regex
+      value: "deploytool_[A-Za-z0-9]{32}"
+      description: Internal deploy-tool bearer token shape
+severity: high

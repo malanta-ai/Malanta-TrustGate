@@ -1,0 +1,30 @@
+id: ATR-2026-00096
+title: atr-b64:U2tpbGwgUmVnaXN0cnkgUG9pc29uaW5nIGFuZCBDb21wcm9taXNlZCBUb29sIERpc3RyaWJ1dGlvbg==
+description: atr-b64:RGV0ZWN0cyBzdXBwbHkgY2hhaW4gYXR0YWNrcyB0aGF0IHRhcmdldCBza2lsbC90b29sIHJlZ2lzdHJpZXMgYW5kIGRpc3RyaWJ1dGlvbiBjaGFubmVscy4gQXR0YWNrZXJzIGNvbXByb21pc2UgbGVnaXRpbWF0ZSB0b29sIHBhY2thZ2VzLCBpbmplY3QgYmFja2Rvb3JzIGludG8gcHVibGlzaGVkIHNraWxscywgb3IgY3JlYXRlIHR5cG9zcXVhdHRpbmcgdG9vbCBuYW1lcyB0byBkaXN0cmlidXRlIHBvaXNvbmVkIHRvb2xzIHRoYXQgZXhlY3V0ZSBtYWxpY2lvdXMgYWN0aW9ucyB3aGVuIGluc3RhbGxlZCBvciBpbnZva2VkIGJ5IGFnZW50cy4=
+severity: critical
+tags:
+  category: tool-poisoning
+  scan_target: mcp
+detection:
+  conditions:
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKShwb3N0Xz9pbnN0YWxsfHByZV8/aW5zdGFsbHxzZXR1cFwucHl8X19pbml0X19cLnB5KVxzKi57MCwzMH0oZXhlY3xldmFsfG9zXC58c3VicHJvY2Vzc3xpbXBvcnRccytzb2NrZXR8aW1wb3J0XHMrcmVxdWVzdHNcLnBvc3Qp
+    description: atr-b64:TWFsaWNpb3VzIGV4ZWN1dGlvbiBob29rcyBpbiBpbnN0YWxsIHNjcmlwdHMgZnJvbSB0b29sIHBhY2thZ2Vz
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKVxiKHJldmVyc2UuP3NoZWxsfGJpbmQuP3NoZWxsfG1ldGVycHJldGVyfGNvYmFsdC4/c3RyaWtlfGJlYWNvbnxjMi4/c2VydmVyfGNvbW1hbmQuP2FuZC4/Y29udHJvbClcYg==
+    description: atr-b64:S25vd24gbWFsd2FyZS9DMiBmcmFtZXdvcmsgcmVmZXJlbmNlcyBpbiB0b29sIHJlc3BvbnNl
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKShcYlNvY2tldFxzKlwofG5ldFwuY29ubmVjdHxuZXdccytXZWJTb2NrZXR8WE1MSHR0cFJlcXVlc3R8ZmV0Y2hccypcKClccyouezAsMzB9KFxkezEsM31cLlxkezEsM31cLlxkezEsM31cLlxkezEsM318YXR0YWNrZXJ8ZXZpbHxtYWxpY2lvdXN8YzJ8bmdyb2sp
+    description: atr-b64:T3V0Ym91bmQgbmV0d29yayBjb25uZWN0aW9ucyB0byBzdXNwaWNpb3VzIGRlc3RpbmF0aW9ucw==
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKShwcm9jZXNzXC5lbnZ8b3NcLmVudmlyb258U3lzdGVtXC5nZXRlbnZ8RU5WXFspXHMqLnswLDEwfShBUEkuP0tFWXxTRUNSRVR8VE9LRU58UEFTU1dPUkR8Q1JFREVOVElBTHxQUklWQVRFLj9LRVkp
+    description: atr-b64:RW52aXJvbm1lbnQgdmFyaWFibGUgYWNjZXNzIHRhcmdldGluZyBzZWNyZXRzIGFuZCBjcmVkZW50aWFscw==
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKVxiKGZzXC5yZWFkfG9wZW5ccypcKHxGaWxlXC5yZWFkfHJlYWRGaWxlKVxzKi57MCwzMH0oXC5zc2h8aWRfcnNhfFwuYXdzfGNyZWRlbnRpYWxzfFwuZW52fHNoYWRvd3xwYXNzd2R8Y29uZmlnXC5qc29ufHNlY3JldHM/XC4p
+    description: atr-b64:UmVhZGluZyBzZW5zaXRpdmUgc3lzdGVtIGZpbGVzIG9yIGNyZWRlbnRpYWwgc3RvcmVz
+  condition: any

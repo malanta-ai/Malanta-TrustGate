@@ -1,0 +1,30 @@
+id: ATR-2026-00259
+title: atr-b64:QU5TSSBFc2NhcGUgQ29kZSBUZXJtaW5hbCBJbmplY3Rpb24=
+description: atr-b64:RGV0ZWN0cyBtYWxpY2lvdXMgQU5TSSBlc2NhcGUgc2VxdWVuY2VzIGVtYmVkZGVkIGluIHRvb2wgb3V0cHV0IG9yIHNraWxsIGNvbnRlbnQgdGhhdCBjYW4gaGlqYWNrIHRlcm1pbmFsIGRpc3BsYXkgKGNsZWFyIHNjcmVlbiwgcmVsb2NhdGUgY3Vyc29yLCBvdmVyd3JpdGUgcHJvbXB0cywgZXhlY3V0ZSBPU0Mtc2VyaWVzIG9wZXJhdGluZy1zeXN0ZW0gY29tbWFuZHMpLiBVc2VkIHRvIGhpZGUgY29udGVudCBmcm9tIGh1bWFuIHJldmlldywgaW5qZWN0IGZha2UgcHJvbXB0cyBpbnRvIENMSSBzZXNzaW9ucywgb3IgdHJpZ2dlciB0ZXJtaW5hbCBleHBsb2l0cy4gT2JzZXJ2ZWQgaW4gZ2FyYWsgYW5zaWVzY2FwZSBwcm9iZS4gQWxzbyByZWxldmFudCB0byB0ZXJtaW5hbC1iYXNlZCBhZ2VudCBmcmFtZXdvcmtzIHdoZXJlIHRvb2wgb3V0cHV0IGlzIHJlbmRlcmVkIGRpcmVjdGx5IHRvIGEgdXNlcidzIHNoZWxsLg==
+severity: high
+tags:
+  category: tool-poisoning
+  scan_target: both
+detection:
+  conditions:
+  - field: tool_response
+    operator: regex
+    value: atr-b64:XHgxYlxdWzAtOV0rO1teXHgwN1x4MWJdKig/Olx4MDd8XHgxYlxcKQ==
+    description: atr-b64:T1NDIChPcGVyYXRpbmcgU3lzdGVtIENvbW1hbmQpIHNlcXVlbmNlIC0gY2FuIHNldCB0aXRsZSwgZXhlY3V0ZSBoeXBlcmxpbmtzLCBvciB0cmlnZ2VyIHRlcm1pbmFsLXNwZWNpZmljIGNvbW1hbmRz
+  - field: tool_response
+    operator: regex
+    value: atr-b64:XHgxYlxbWzAtOTtdKltIZkpLXQ==
+    description: atr-b64:Q3Vyc29yLXBvc2l0aW9uIC8gc2NyZWVuLWNsZWFyIENTSSBjb2RlcyAtIEgvZiBtb3ZlIGN1cnNvciwgSi9LIGNsZWFyIGRpc3BsYXk=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:XHgxYlxbKD86XD8xMDQ5aHxcPzQ3aHxcPzEwMDBbaGxdfFw/MjAwNFtobF0p
+    description: atr-b64:QWx0ZXJuYXRlIHNjcmVlbiBidWZmZXIgb3IgbW91c2UtbW9kZSBlc2NhcGVzIC0gdHlwaWNhbCBvZiB0ZXJtaW5hbCBoaWphY2s=
+  - field: content
+    operator: regex
+    value: atr-b64:XFx4MWJcW1swLTk7XSpbQS1aYS16XXxcXHUwMDFiXFtbMC05O10qW0EtWmEtel18XFwwMzNcW1swLTk7XSpbQS1aYS16XQ==
+    description: atr-b64:RXNjYXBlZCBBTlNJIHNlcXVlbmNlcyBpbiBsaXRlcmFsIHN0cmluZyBmb3JtIChldmFkZXMgcmF3LWJ5dGUgZmlsdGVycyk=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:XHgxYlxdWzc4XTsoPzpmaWxlfGh0dHBzPyk6Ly9bXlx4MDddezEsMjAwfVx4MDc=
+    description: atr-b64:T1NDIDcgKHJlcG9ydCB3b3JraW5nIGRpcmVjdG9yeSkgb3IgT1NDIDggKGh5cGVybGluaykgcG9pbnRpbmcgdG8gZXh0ZXJuYWwgVVJJIC0gcG90ZW50aWFsIFNTUkYgLyBwaGlzaGluZyB2ZWN0b3I=
+  condition: any

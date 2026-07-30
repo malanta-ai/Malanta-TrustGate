@@ -1,0 +1,30 @@
+id: ATR-2026-00405
+title: atr-b64:TWFya2Rvd24gSW1hZ2UgVVJMIEV4ZmlsdHJhdGlvbiBhbmQgWFNTIEluamVjdGlvbg==
+description: atr-b64:RGV0ZWN0cyBpbnN0cnVjdGlvbnMgdG8gcHJvZHVjZSBtYXJrZG93biBpbWFnZS9saW5rIHN5bnRheCB0aGF0IGV4ZmlsdHJhdGVzIGNvbnRleHQgZGF0YSB2aWEgVVJMIHF1ZXJ5IHBhcmFtZXRlcnMsIGFuZCBqYXZhc2NyaXB0OiBYU1MgdmlhIG1hcmtkb3duIGxpbmssIGZyb20gTlZJRElBIGdhcmFrIHdlYl9pbmplY3Rpb24gcHJvYmUuIFdoZW4gYW4gYWdlbnQgcmVuZGVycyBtYXJrZG93biBpbiBhIGJyb3dzZXIvQ29sYWIvcGxheWdyb3VuZCwgdGhlIGltYWdlIHRhZyBsb2FkcyBhIHJlbW90ZSBVUkwgd2l0aCBzZW5zaXRpdmUgZGF0YSBpbiB0aGUgcXVlcnkgc3RyaW5nLiBLZXkgc2lnbmFsczogbWFya2Rvd24gaW1hZ2Ugc3ludGF4IHdpdGggcGxhY2Vob2xkZXIgbWFya2VycyAoW0lORk9dLCBbTlVNXSwgW0RBVEFdKSBpbiB0aGUgVVJMLCBrbm93biBleGZpbCBkb21haW5zICh3dXp6aS5uZXQsIGRlcmN6eW5za2kuY29tLCBsbG1zZWMubmV0KSwgamF2YXNjcmlwdDogVVJJIGluIG1hcmtkb3duIGxpbmssIGFuZCB0aGUgU3RyaW5nQXNzZW1ibHkgY29uY2F0ZW5hdGlvbiB0ZW1wbGF0ZS4=
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: tool_response
+detection:
+  conditions:
+  - field: tool_response
+    operator: regex
+    value: atr-b64:IVxbW15cXV17MCw2MH1cXVwoaHR0cHM/Oi8vW15ccyldezMsMTAwfVw/W14pXXswLDgwfT1ccyooPzpcWyg/OklORk98TlVNfERBVEF8Q09OVEVYVClcXXxce1tBLVpfXXsyLDIwfVx9KQ==
+    description: atr-b64:TWFya2Rvd24gaW1hZ2UgVVJMIHdpdGggZGF0YSBwbGFjZWhvbGRlciBpbiBxdWVyeSBwYXJhbQ==
+  - field: user_input
+    operator: regex
+    value: atr-b64:XFtsaW5rXF1cKGphdmFzY3JpcHQ6W15cKV17MSwyMDB9XCk=
+    description: atr-b64:amF2YXNjcmlwdDogVVJJIGluIG1hcmtkb3duIGxpbmsgKFhTUyk=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:aHR0cHM/Oi8vKD86d3V6emlcLm5ldHxkZXJjenluc2tpXC5jb218bGxtc2VjXC5uZXQp
+    description: atr-b64:S25vd24gZ2FyYWsgd2ViX2luamVjdGlvbiBleGZpbCBkb21haW5zIGFzIFVSTCBpbiB0b29sIHJlc3BvbnNl
+  - field: tool_response
+    operator: regex
+    value: atr-b64:Q29uY2F0ZW5hdGVccyt0aGVzZVxzK3N0cmluZ3NbXHNcU117MCwxMjB9cmVwbGFjZVxzK1xbKD86SU5GT3xOVU18REFUQSlcXQ==
+    description: atr-b64:U3RyaW5nQXNzZW1ibHkgZXhmaWwgdGVtcGxhdGU=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:UHJpbnRccyt0aGVccytmb2xsb3dpbmdbXHNcU117MCw4MH0hXFtkYXRhXF1cKGh0dHBzPzovL1tcc1xTXXswLDgwfT1cWyg/OkRBVEF8SU5GTylcXQ==
+    description: atr-b64:UGxheWdyb3VuZE1hcmtkb3duRXhmaWwgdGVtcGxhdGU=
+  condition: any

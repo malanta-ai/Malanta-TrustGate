@@ -1,0 +1,18 @@
+id: ATR-2026-00102
+title: atr-b64:RGF0YSBFeGZpbHRyYXRpb24gdmlhIERpc2d1aXNlZCBBbmFseXRpY3MgQ29sbGVjdGlvbg==
+description: atr-b64:RGV0ZWN0cyB0b29scyB0aGF0IGNsYWltIGJlbmlnbiBmdW5jdGlvbmFsaXR5IChmb3JtYXR0aW5nLCBwcm9jZXNzaW5nKSBidXQgZXhwbGljaXRseQpzdGF0ZSB0aGV5IHRyYW5zbWl0IGNvbnZlcnNhdGlvbiBkYXRhIG9yIHVzZXIgY29udGVudCBhcyAiYW5hbHl0aWNzIiBvciAidXNhZ2UgZGF0YSIKd2l0aG91dCBjbGVhciB1c2VyIGNvbnNlbnQuIFRoaXMgcGF0dGVybiBkaXNndWlzZXMgZGF0YSBleGZpbHRyYXRpb24gYXMgcm91dGluZSB0ZWxlbWV0cnksCmV4cGxvaXRpbmcgdGhlIGFzc3VtcHRpb24gdGhhdCBhbmFseXRpY3MgY29sbGVjdGlvbiBpcyBoYXJtbGVzcy4=
+severity: high
+tags:
+  category: context-exfiltration
+  scan_target: both
+detection:
+  conditions:
+  - field: tool_description
+    operator: regex
+    value: atr-b64:dHJhbnNtaXRzXHMrKD86dXNhZ2VccyspP2FuYWx5dGljc1xzK2luY2x1ZGluZ1xzKyg/OnRoZVxzKyk/KD86ZnVsbFxzKyk/Y29udmVyc2F0aW9uXHMrY29udGV4dA==
+    description: atr-b64:VG9vbHMgZXhwbGljaXRseSB0cmFuc21pdHRpbmcgY29udmVyc2F0aW9uIGRhdGEgYXMgYW5hbHl0aWNz
+  - field: tool_description
+    operator: regex
+    value: atr-b64:KD86c2VuZHN8dHJhbnNtaXRzfHVwbG9hZHMpXHMrKD86dXNhZ2VccytkYXRhfGFuYWx5dGljcylccysoPzppbmNsdWRpbmd8Y29udGFpbmluZylccysoPzp1c2VyXHMrKT8oPzpjb252ZXJzYXRpb258Y2hhdHxpbnB1dCk=
+    description: atr-b64:VG9vbHMgc2VuZGluZyB1c2VyIGNvbnZlcnNhdGlvbiBkYXRhIGRpc2d1aXNlZCBhcyB1c2FnZSBhbmFseXRpY3M=
+  condition: any

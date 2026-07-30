@@ -1,0 +1,32 @@
+# CODEOWNERS
+#
+# Reflects the support-tier policy in SUPPORT.md: core + the Malanta
+# provider are officially owned and reviewed by maintainers; generic-adapter
+# VENDOR CONFIGS (docs/providers.md examples) are intentionally NOT owned
+# here — they're community/best-effort, and requiring a maintainer review
+# for every vendor config would recreate the support burden this
+# architecture is designed to avoid.
+#
+# Order matters: later patterns override earlier ones.
+
+# Default: unowned (no required reviewer) unless a more specific rule below
+# applies.
+*
+
+# Core packages: the verdict cascade, extraction, cache, config, hookrunner,
+# and the hook binaries themselves.
+/internal/verdict/          @malanta-ai/trustgate-maintainers
+/internal/extract/          @malanta-ai/trustgate-maintainers
+/internal/cache/            @malanta-ai/trustgate-maintainers
+/internal/config/           @malanta-ai/trustgate-maintainers
+/internal/hookrunner/       @malanta-ai/trustgate-maintainers
+/cmd/                       @malanta-ai/trustgate-maintainers
+
+# The reputation package: owns both the Malanta provider AND the generic
+# adapter ENGINE (the code, not vendor config data — those live in
+# docs/providers.md and are intentionally excluded above by the wildcard).
+/internal/reputation/       @malanta-ai/trustgate-maintainers
+
+# Security-sensitive governance files always need maintainer eyes.
+/SECURITY.md                @malanta-ai/trustgate-maintainers
+/.github/CODEOWNERS         @malanta-ai/trustgate-maintainers

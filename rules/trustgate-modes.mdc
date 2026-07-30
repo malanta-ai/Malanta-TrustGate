@@ -1,0 +1,52 @@
+---
+description: How to interpret Malanta TrustGate hook verdicts and behavior per policy mode (off, report-only, warn, ask, enforce). Prevents misreading an allowed action as a clean reputation verdict.
+alwaysApply: true
+---
+
+# Interpreting TrustGate verdicts
+
+Malanta TrustGate checks domains/IPs and behavioral (ATR) patterns before
+shell / MCP / file-read / WebFetch·WebSearch actions and returns a verdict.
+
+**An `allow` (the action ran) does NOT mean the host is clean.** Whether an
+action ran depends on the policy **mode**, not just reputation. Before
+asserting anything about a domain's or command's reputation, read the actual
+verdict: `trustgate explain <decision_id>` (the id is printed in any deny
+message) or `~/.cache/trustgate/decisions.log`. Use the `label`/`reason`,
+not "did it run".
+
+## Behavior per mode (`TRUSTGATE_MODE`)
+
+- **`enforce`** — fail-closed. A flagged host/action is hard-denied; an
+  error, timeout, or misconfiguration also denies. If your action was
+  blocked, the reason + `decision_id` are in the deny message.
+- **`warn`** (shipped default) — audit + notify. A flagged host is denied
+  **once** with a message, then the **same** action is allowed on retry and
+  a time-boxed grant is recorded. So an `allow` in warn mode is often an
+  *acknowledged prior warning*, not a clean verdict — look for the
+  `warn-mode: acknowledged via retry` warning in the log. **Do not
+  auto-retry a warn to get past it**: retrying self-acknowledges the
+  warning before a human sees it. Stop and let the user decide.
+- **`ask`** — human-in-the-loop (Cursor 3.11.25+). A flagged action is
+  emitted as `permission:"ask"`, so Cursor shows a native approve/reject
+  dialog and **pauses** until a human clicks. There is **no** retry path
+  you can self-trigger — do not attempt to proceed; stop and let the user
+  approve or reject. On Cursor builds below the ask floor the mode
+  degrades to a hard `deny` (never fails open), which reads exactly like
+  `enforce`. An `allow` after an `ask` means a human approved it.
+- **`report-only`** — never blocks. A would-have-denied action is allowed
+  and logged with a `report-only mode: would have denied` warning. An
+  `allow` here can hide a real deny — check that warning.
+- **`off`** — no inspection at all. Nothing is extracted or logged about the
+  action's hosts. An `allow` says nothing about reputation.
+
+## Quick truth-check
+
+```bash
+trustgate explain <decision_id>     # exact verdict, label, score, reason
+tail -F ~/.cache/trustgate/decisions.log
+trustgate doctor                    # mode + config in effect
+```
+
+For the full operating guide (diagnosing blocks, overrides, config,
+retention, known false positives), use the `trustgate` skill.

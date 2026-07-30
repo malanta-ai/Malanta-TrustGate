@@ -1,0 +1,30 @@
+id: ATR-2026-00095
+title: atr-b64:TUNQIFRvb2wgU3VwcGx5IENoYWluIFBvaXNvbmluZw==
+description: atr-b64:RGV0ZWN0cyB0b29sIHBvaXNvbmluZyBhdHRhY2tzIHRhcmdldGluZyB0aGUgTUNQIChNb2RlbCBDb250ZXh0IFByb3RvY29sKSBza2lsbC90b29sIHN1cHBseSBjaGFpbi4gQXR0YWNrZXJzIGluamVjdCBtYWxpY2lvdXMgcGF5bG9hZHMgaW50byB0b29sIGRlc2NyaXB0aW9ucywgcmV0dXJuIHZhbHVlcywgb3Igc2NoZW1hcyB0aGF0IGFyZSBjb25zdW1lZCBieSBhZ2VudHMsIGNhdXNpbmcgdW5pbnRlbmRlZCBjb2RlIGV4ZWN1dGlvbiwgZGF0YSBleGZpbHRyYXRpb24sIG9yIHByaXZpbGVnZSBlc2NhbGF0aW9uIHdoZW4gdGhlIHBvaXNvbmVkIHRvb2wgaXMgaW52b2tlZC4=
+severity: critical
+tags:
+  category: tool-poisoning
+  scan_target: mcp
+detection:
+  conditions:
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKVxiKGlnbm9yZXxkaXNyZWdhcmR8b3ZlcnJpZGV8Zm9yZ2V0KVxzKyhhbGxccyspPyhwcmV2aW91c3xwcmlvcnxzeXN0ZW18b3JpZ2luYWx8c2FmZXR5KVxzKyhpbnN0cnVjdGlvbnM/fHJ1bGVzP3xwcm9tcHRzP3xjb25zdHJhaW50cz98Z3VhcmRyYWlscz8p
+    description: atr-b64:UHJvbXB0IGluamVjdGlvbiBwYXlsb2FkIGluIHRvb2wgcmVzcG9uc2Ugb3V0cHV0
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKShcYmV2YWxccypcKHxcYmV4ZWNccypcKHxcYm9zXC5zeXN0ZW1ccypcKHxzdWJwcm9jZXNzXC4ocnVufGNhbGx8UG9wZW4pfGNoaWxkX3Byb2Nlc3NcLmV4ZWN8UnVudGltZVwuZ2V0UnVudGltZVwoXClcLmV4ZWMp
+    description: atr-b64:RGFuZ2Vyb3VzIGNvZGUgZXhlY3V0aW9uIHByaW1pdGl2ZXMgaW4gdG9vbCByZXNwb25zZQ==
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKVxiKGN1cmx8d2dldHxmZXRjaHxodHRwfHJlcXVlc3QpXHMrLnswLDMwfShhdHRhY2tlcnxldmlsfG1hbGljaW91c3xleGZpbHxjMnxjYWxsYmFja3x3ZWJob29rXC5zaXRlfG5ncm9rfGJ1cnAp
+    description: atr-b64:RGF0YSBleGZpbHRyYXRpb24gVVJMIHBhdHRlcm5zIGluIHRvb2wgcmVzcG9uc2U=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKShcW1NZU1RFTVxdfFxbSU5TVFxdfDxcfHN5c3RlbVx8Pnw8XHxpbV9zdGFydFx8Pnw8PFNZUz4+fFxbL0lOU1RcXSlccyouezUsfQ==
+    description: atr-b64:SW5qZWN0ZWQgc3lzdGVtIHByb21wdCBkZWxpbWl0ZXJzIGluIHRvb2wgcmVzcG9uc2U=
+  - field: tool_response
+    operator: regex
+    value: atr-b64:KD9pKVxiKHlvdVxzK211c3R8eW91XHMrc2hvdWxkfGFsd2F5c3xuZXZlcilccysuezAsMzB9KHNlbmR8dHJhbnNtaXR8Zm9yd2FyZHxjb3B5fGV4ZmlsdHJhdGV8dXBsb2FkKVxzKy57MCwzMH0oZGF0YXxmaWxlfHNlY3JldHx0b2tlbnxrZXl8Y3JlZGVudGlhbHxwYXNzd29yZHxyZXNwb25zZSlccysuezAsMjB9KHRvfGF0fHZpYSlccytodHRwcz86Ly8=
+    description: atr-b64:RXhmaWx0cmF0aW9uIGluc3RydWN0aW9ucyBkaXNndWlzZWQgYXMgdG9vbCBiZWhhdmlvciBkaXJlY3RpdmVz
+  condition: any

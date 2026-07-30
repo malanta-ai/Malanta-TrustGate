@@ -1,0 +1,33 @@
+# golangci-lint v2 configuration. Deliberately minimal: the "standard"
+# linter set (errcheck, govet, ineffassign, staticcheck, unused, ...)
+# catches real bugs without the noise/false-positive rate of "all". See
+# https://golangci-lint.run/docs/linters/ for what "standard" includes.
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: standard
+  settings:
+    errcheck:
+      # Writes to os.Stdout/os.Stderr (the only callers of these in this
+      # tree) cannot fail in a way the caller can or should react to — a
+      # failed diagnostic write is not a reason to change a verdict or a
+      # CLI exit code. Excluding them keeps errcheck focused on I/O whose
+      # failure actually matters (files, DB, network, cleanup).
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+  exclusions:
+    rules:
+      # Test scaffolding — httptest handlers writing to a recorder,
+      # deferred Close on test-owned fds/servers, request-body decode in
+      # fake providers — cannot fail in a way the test should react to
+      # (a broken fake surfaces as an assertion failure downstream, not a
+      # swallowed error). Checking every one adds noise without catching a
+      # real bug. Production code keeps full errcheck coverage.
+      - path: _test.go
+        linters:
+          - errcheck

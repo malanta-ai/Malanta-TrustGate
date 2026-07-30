@@ -1,0 +1,160 @@
+# CI for Malanta TrustGate.
+#
+# Runs on every push to main and every pull request. The job is
+# intentionally minimal: build, run unit + integration tests, then
+# verify with race detector + go vet + govulncheck. Live API tests are
+# gated behind the e2e build tag and are NOT exercised here (they
+# require a customer-supplied MALANTA_API_KEY); contributors run them
+# locally via `make e2e`.
+#
+# Go version is pinned to match the local development requirement:
+# Darwin 25 / macOS 26 ("Tahoe") and newer require a Go linker emitting
+# LC_UUID; 1.23+ satisfies that, and we pin 1.26 to match the version
+# specified in the repo's development docs.
+#
+# Platform matrix: the hooks ship to macOS, Linux, AND Windows
+# (`scripts/install-hooks.ps1` is in-tree alongside the POSIX shell
+# installer). The domain-extraction code has Windows-specific branches (.exe suffix
+# stripping, PowerShell cmdlet names in nonNetworkBins / networkBins,
+# `&` call-operator handling in segmentLeadingBin); without a
+# matrixed CI those branches rot unnoticed between Windows installs.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        # Third-party actions are pinned to a commit SHA (with the
+        # human-readable tag in a trailing comment) so a compromised or
+        # force-moved tag can't silently change what runs in CI. Bump the
+        # SHA + comment together (Dependabot's github-actions ecosystem
+        # keeps these current).
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          # check-no-secrets.sh scans tracked file CONTENT via `git grep`,
+          # not history, so a shallow checkout is sufficient — this is a
+          # point-in-time content guard, not a history audit.
+          fetch-depth: 1
+
+      - name: Check for committed secrets
+        # Fails loudly on the exact failure mode documented in AGENTS.md's
+        # history: a real API key value pasted into a tracked file. See
+        # scripts/check-no-secrets.sh for what it does and doesn't catch.
+        # Bash-only, run once on Linux (content scan is platform-independent).
+        if: matrix.os == 'ubuntu-latest'
+        run: ./scripts/check-no-secrets.sh
+
+      - name: Set up Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.26.x'
+          # cache: true is the default with setup-go@v5 — go.mod, go.sum,
+          # and the build cache are all keyed automatically.
+
+      - name: Verify module hygiene
+        # `go mod tidy` should be a no-op on a green tree. If a PR adds
+        # an import without running `go mod tidy`, this fails loudly
+        # instead of merging a tree where `make tidy` would mutate
+        # go.mod / go.sum.
+        #
+        # Linux only: on Windows runners the CRLF line-ending normalization
+        # of go.sum trips this check spuriously even on a green tree.
+        # `go mod tidy` itself is platform-independent, so checking it on
+        # one OS is sufficient.
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          go mod tidy
+          if [ -n "$(git status --porcelain go.mod go.sum)" ]; then
+            echo "::error::go.mod or go.sum is dirty after 'go mod tidy'. Run 'make tidy' locally."
+            git --no-pager diff go.mod go.sum
+            exit 1
+          fi
+
+      - name: Build all binaries
+        run: go build ./...
+
+      - name: Unit + integration tests
+        run: go test -count=1 ./...
+
+      - name: Race-detector pass
+        # Re-running with -race catches data races that the regular
+        # pass cannot. Tests that touch the SQLite cache exercise
+        # concurrent reader/writer paths (WAL mode), so this is the
+        # most realistic place for a race to hide.
+        #
+        # Race-detector adds non-trivial Windows runner time and the
+        # race coverage is OS-independent (it's about Go memory ops,
+        # not syscall surface), so we run it on ubuntu only.
+        if: matrix.os == 'ubuntu-latest'
+        run: go test -race -count=1 ./...
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: govulncheck
+        # govulncheck scans the module graph against the Go
+        # vulnerability database. Hard-fail the CI run on any
+        # vulnerability — the hook subprocesses ship the customer's
+        # API key on every request, and an exploitable CVE in a
+        # transitive dep is the same threat class as an exfil bug
+        # in our own code.
+        #
+        # Pinned to a specific release (not @latest) so a CI run is
+        # reproducible and a new govulncheck release can't silently
+        # change what fails a build without a deliberate version bump
+        # here. Bump deliberately; check github.com/golang/vuln/releases.
+        #
+        # Module-graph scan is platform-independent; ubuntu-only.
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.5.0
+          govulncheck ./...
+
+      - name: golangci-lint
+        # Static analysis beyond `go vet`: unused code, style
+        # consistency, common bug patterns. Ubuntu-only (platform-
+        # independent analysis); config lives in .golangci.yml.
+        if: matrix.os == 'ubuntu-latest'
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
+        with:
+          version: v2.12
+
+      - name: Cross-compile check (all supported targets)
+        # A quick `go build` per target — NOT a full goreleaser run —
+        # catches a platform-specific compile break (e.g. a Windows-only
+        # branch with a typo) on every PR, without needing the release
+        # workflow's heavier tooling. Mirrors .goreleaser.yaml's target
+        # matrix. Runs once on ubuntu since cross-compilation doesn't
+        # depend on the host OS.
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          set -e
+          for target in darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64; do
+            os="${target%/*}"
+            arch="${target#*/}"
+            echo "==> GOOS=$os GOARCH=$arch"
+            GOOS="$os" GOARCH="$arch" CGO_ENABLED=0 go build -o /dev/null ./cmd/...
+          done
+
+      - name: Plugin wrapper-script tests
+        # Exercises hooks/scripts/lib/ensure-binary.sh's download/verify
+        # path against a local fake release server — see
+        # scripts/test-ensure-binary.sh and docs/plugin.md's Supply
+        # Chain section. Bash + python3 + curl, so Linux/macOS only.
+        if: matrix.os != 'windows-latest'
+        run: ./scripts/test-ensure-binary.sh

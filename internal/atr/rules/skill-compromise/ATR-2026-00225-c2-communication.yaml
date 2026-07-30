@@ -1,0 +1,30 @@
+id: ATR-2026-00225
+title: atr-b64:SGFyZGNvZGVkIFN1c3BpY2lvdXMgSVAgQWRkcmVzcyBpbiBTa2lsbCBDb250ZW50
+description: atr-b64:RGV0ZWN0cyBoYXJkY29kZWQgSVAgYWRkcmVzc2VzIGluIHNraWxsIGNvbnRlbnQgdGhhdCBtYXkgcmVwcmVzZW50IGNvbW1hbmQgYW5kIGNvbnRyb2wgIChDMikgc2VydmVycywgcGFydGljdWxhcmx5IHdoZW4gYXNzb2NpYXRlZCB3aXRoIHN1c3BpY2lvdXMgbmV0d29yayByYW5nZXMgb3Iga25vd24gIG1hbHdhcmUgaW5mcmFzdHJ1Y3R1cmUuIFRoZSBhbmFseXplZCBza2lsbCAic2FrYWVuNzM2amloL3lvdXR1YmUtd2F0Y2hlci1wIiBjb250YWlucyAgcmVmZXJlbmNlIHRvIElQIDkxLjkyLjI0Mi4zMCBpZGVudGlmaWVkIGFzIGEga25vd24gbWFsd2FyZSBDMiBzZXJ2ZXIu
+severity: high
+tags:
+  category: skill-compromise
+  scan_target: skill
+detection:
+  conditions:
+  - field: content
+    operator: regex
+    value: atr-b64:KEMyXHMrc2VydmVyfGNvbW1hbmRccytjb250cm9sfG1hbHdhcmVccythY3RvcilccytbXlxuXSpcZHsxLDN9XC5cZHsxLDN9XC5cZHsxLDN9XC5cZHsxLDN9
+    description: atr-b64:UmVmZXJlbmNlcyB0byBDMiBzZXJ2ZXIgb3IgbWFsd2FyZSBhY3RvciB3aXRoIElQIGFkZHJlc3M=
+  - field: content
+    operator: regex
+    value: atr-b64:KGtub3dufGlkZW50aWZpZWR8ZGV0ZWN0ZWQpXHMrKG1hbHdhcmV8dGhyZWF0fGFjdG9yfHNlcnZlcilbXlxuXSpcZHsxLDN9XC5cZHsxLDN9XC5cZHsxLDN9XC5cZHsxLDN9
+    description: atr-b64:RXhwbGljaXQgaWRlbnRpZmljYXRpb24gb2YgbWFsaWNpb3VzIGluZnJhc3RydWN0dXJlIHdpdGggSVA=
+  - field: content
+    operator: regex
+    value: atr-b64:XGR7MSwzfVwuXGR7MSwzfVwuXGR7MSwzfVwuXGR7MSwzfVteXG5dKihDMnxjb21tYW5kfGNvbnRyb2x8YmFja2Rvb3J8bWFsd2FyZSk=
+    description: atr-b64:SVAgYWRkcmVzcyBmb2xsb3dlZCBieSBtYWxpY2lvdXMgaW5mcmFzdHJ1Y3R1cmUgdGVybXM=
+  - field: content
+    operator: regex
+    value: atr-b64:KDkxXC45MlwuMjRbMC05XVwufDE4NVwuMTU5XC4xNVswLTldXC58MTk0XC44N1wuOVswLTldXC4pWzAtOV17MSwzfQ==
+    description: atr-b64:S25vd24gbWFsaWNpb3VzIElQIHJhbmdlcyBjb21tb25seSB1c2VkIGZvciBDMg==
+  - field: content
+    operator: regex
+    value: atr-b64:ZmluZGluZ19bMC05XSs6XHMqKGtub3dufGlkZW50aWZpZWQpXHMrKG1hbHdhcmV8dGhyZWF0fEMyfGNvbW1hbmQp
+    description: atr-b64:U3RydWN0dXJlZCB0aHJlYXQgaW50ZWxsaWdlbmNlIGZpbmRpbmdzIGZvcm1hdA==
+  condition: any

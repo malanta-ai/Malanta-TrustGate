@@ -1,0 +1,33 @@
+title: "atr-b64:RGVzdHJ1Y3RpdmUgU2hlbGwgQ29tbWFuZCBTaGFwZXM="
+id: TRUSTGATE-SHELL-008
+description: "atr-b64:RGV0ZWN0cyBzaGVsbCBjb21tYW5kcyB0aGF0IGNhdXNlIHVucmVjb3ZlcmFibGUgZGFtYWdlOiBmb3JrIGJvbWJzLCBgcm0gLXJmIC9gIGF0IGZpbGVzeXN0ZW0gcm9vdCwgYGRkIGlmPS9kZXYvLi4uYCB3cml0aW5nIHRvIGEgYmxvY2sgZGV2aWNlLCBgbWtmc2Agb2YgYSByZWFsIGRldmljZSwgYHNocmVkYCBvZiBhIGRpcmVjdG9yeSB0cmVlLCBgd2lwZWZzYCBvZiBhIGRldmljZS4gTm8gYmVuaWduIGFnZW50IHdvcmtmbG93IG5lZWRzIGFueSBvZiB0aGVzZS4="
+severity: critical
+tags:
+  category: privilege-escalation
+detection:
+  condition: any
+  conditions:
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:OlwoXClccypce1xzKjpccypcfFxzKjpccyomXHMqXH1ccyo7XHMqOg=="
+      description: "atr-b64:Q2xhc3NpYyBiYXNoIGZvcmsgYm9tYiA6KCl7Onw6Jn07Og=="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxicm1cYltefDsmXG5dKj9ccy1bclJmXXsxLDN9W158OyZcbl0qP1xzLyg/OlxzfCR8XCp8LS1uby1wcmVzZXJ2ZS1yb290KQ=="
+      description: "atr-b64:cm0gLXJmIGF0IGZpbGVzeXN0ZW0gcm9vdA=="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxiZGRcYltefDsmXG5dKj9cYm9mPS9kZXYvKD86c2RbYS16XXxudm1lXGQrblxkK3xoZFthLXpdfGRpc2tcZCt8cmRpc2tcZCt8dmRbYS16XSlcYg=="
+      description: "atr-b64:ZGQgd3JpdGluZyB0byBhIGJsb2NrIGRldmljZSAoZGlzayB3aXBlKQ=="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxibWtmcyg/OlwuW2EtejAtOV0rKT9cYltefDsmXG5dKj9ccy9kZXYvKD86c2RbYS16XXxudm1lXGQrblxkK3xoZFthLXpdfGRpc2tcZCt8dmRbYS16XSlcYg=="
+      description: "atr-b64:bWtmcyBvZiBhIGJsb2NrIGRldmljZQ=="
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxid2lwZWZzXGJbXnw7JlxuXSo/XHMvZGV2Lyg/OnNkW2Etel18bnZtZVxkK25cZCt8aGRbYS16XXxkaXNrXGQrfHZkW2Etel0pXGI="
+      description: "atr-b64:d2lwZWZzIG9mIGEgYmxvY2sgZGV2aWNl"
+    - field: shell_command
+      operator: regex
+      value: "atr-b64:KD9pKVxic2hyZWRcYltefDsmXG5dKj9ccy1bQS1aYS16XSpbdVVdW0EtWmEtel0qXHMrKD86L3x+fFwkSE9NRSk="
+      description: "atr-b64:c2hyZWQgLXUgKHVubGluayBhZnRlcikgdGFyZ2V0aW5nIC8gb3IgJEhPTUU="

@@ -1,0 +1,19 @@
+# Build output
+dist/
+vendor/
+.gomodcache/
+
+# Local state: verdict cache and its SQLite sidecars
+*.db
+*.db-wal
+*.db-shm
+.cache/
+
+# Secrets: the API key lives here for local dev and must never be committed
+.env
+
+# Python bytecode (scripts/ has one maintainer Python tool)
+__pycache__/
+*.pyc
+
+.DS_Store
