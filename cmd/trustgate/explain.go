@@ -25,7 +25,7 @@ func runExplain(args []string) error {
 	// (/etc/trustgate/env, ~/.config/trustgate/env) can relocate CacheDir,
 	// and bare Load() would silently query the default-path DB instead,
 	// reporting "not found" for decisions that are really in the
-	// configured store (OPS-003). Matches doctor/override/setup.
+	// configured store. Matches doctor/override/setup.
 	cfg, err := config.LoadWithEnvFiles()
 	if err != nil {
 		return fmt.Errorf("load config: %w", err)

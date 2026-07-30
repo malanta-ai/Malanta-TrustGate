@@ -160,8 +160,8 @@ _trustgate_download_verified() {
       echo "trustgate plugin: cosign is installed but this release has no signature bundle; proceeding on SHA256-only verification" >&2
     fi
   else
-    # DOC-001: the docs promised a warning on the checksum-only path, but the
-    # code was silent when cosign was ABSENT. Emit it so the operator knows
+    # The docs promised a warning on the checksum-only path, but the code
+    # was silent when cosign was ABSENT. Emit it so the operator knows
     # the download was verified by same-origin checksum only (no independent
     # signature). Install cosign, or use the build-from-source fallback, for
     # a stronger guarantee. See docs/plugin.md's Supply Chain section.
