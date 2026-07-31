@@ -1,8 +1,8 @@
 {
   "name": "malanta-trustgate",
   "displayName": "Malanta TrustGate",
-  "description": "Pre-execution reputation checks for Cursor agents: block shell commands, MCP calls, file reads, and WebFetch/WebSearch that touch malicious domains or IPs, via a pluggable reputation provider (Malanta by default, or bring your own vendor).",
-  "version": "0.1.0",
+  "description": "Checks where your agent is about to send bytes — domains, IPs, and GitHub repositories — against a reputation provider before the action runs, and blocks what comes back flagged. Covers shell commands, MCP calls, file reads, and WebFetch/WebSearch. Malanta by default, or bring your own vendor.",
+  "version": "0.1.1",
   "author": {
     "name": "Malantai Ltd.",
     "email": "hello@malanta.ai"
@@ -17,6 +17,7 @@
     "reputation",
     "threat-intelligence",
     "domain-reputation",
+    "supply-chain",
     "malanta"
   ],
   "category": "Security",

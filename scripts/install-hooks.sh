@@ -21,11 +21,10 @@
 #                        this only omits the in-agent guidance that helps
 #                        the agent read verdicts correctly.
 #   --prebuilt           Don't build from source (no Go toolchain needed).
-#                        Instead download the matching prebuilt binaries
-#                        for this OS/arch from the internal binaries repo
-#                        (malanta-ai/Malanta-TrustGate-Binaries), verify
-#                        their SHA-256, and install those. Requires access
-#                        to that private repo.
+#                        Instead download this OS/arch's binaries from the
+#                        GitHub release matching the version in
+#                        .cursor-plugin/plugin.json, verify each against the
+#                        release's signed checksums.txt, and install those.
 
 set -euo pipefail
 
@@ -37,8 +36,9 @@ cfg_dir="$HOME/.config/trustgate"
 cursor_dir="$HOME/.cursor"
 key_file="$cfg_dir/env"
 
-# Internal prebuilt-binaries repo (used only by --prebuilt).
-binaries_repo_url="https://github.com/malanta-ai/Malanta-TrustGate-Binaries.git"
+# Release download base (used only by --prebuilt). Overridable for testing
+# against a local fixture, the same escape hatch the plugin resolver has.
+release_base_url="${TRUSTGATE_RELEASE_BASE_URL:-https://github.com/malanta-ai/Malanta-TrustGate/releases/download}"
 
 # Parse flags up front: --reset-key (key-file handling) is needed
 # before the steps below run, not just at the end.
@@ -56,13 +56,42 @@ done
 mkdir -p "$bin_dir" "$cfg_dir" "$cursor_dir"
 chmod 700 "$cfg_dir"
 
-# fetch_prebuilt downloads the matching prebuilt archive from the internal
-# binaries repo, verifies every archive's SHA-256 against the repo's
-# SHA256SUMS, and extracts this platform's executables into dist/ (so the
-# install step below is identical to the build path). Used for --prebuilt
-# so a developer without a Go toolchain can still install.
+# The five hook binaries plus the trustgate admin CLI. Declared before the
+# build/download step because --prebuilt fetches exactly this set.
+binaries=(
+  trustgate-before-prompt
+  trustgate-before-shell
+  trustgate-before-mcp
+  trustgate-before-read-file
+  trustgate-before-tool-use
+  trustgate
+)
+
+# sha256_of prints a file's hex digest using whichever tool the platform
+# ships (macOS has shasum, most Linux distros have sha256sum).
+sha256_of() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | awk '{print $1}'
+  else
+    return 1
+  fi
+}
+
+# fetch_prebuilt downloads this platform's binaries from the GitHub release
+# matching the plugin version, verifies each against that release's
+# checksums.txt, and drops them in dist/ so the install step below is
+# identical to the build path. Used for --prebuilt so a machine with no Go
+# toolchain can still install.
+#
+# This is the same artifact set, and the same verification chain, that the
+# Marketplace plugin's resolver uses (hooks/scripts/lib/ensure-binary.sh):
+# SHA-256 against checksums.txt, plus a cosign signature over that file
+# when the cosign CLI is available. Keeping one release as the single
+# source of truth means there is no second channel to keep in sync.
 fetch_prebuilt() {
-  local version os arch archive tmp rel
+  local version os arch tmp base expected actual name asset
   version="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' .cursor-plugin/plugin.json | head -1)"
   [ -n "$version" ] || { echo "error: could not read plugin version from .cursor-plugin/plugin.json" >&2; exit 1; }
   case "$(uname -s)" in
@@ -75,28 +104,49 @@ fetch_prebuilt() {
     arm64|aarch64) arch=arm64 ;;
     *) echo "error: unsupported arch $(uname -m)" >&2; exit 1 ;;
   esac
-  archive="trustgate_${version}_${os}_${arch}.tar.gz"
+  command -v sha256sum >/dev/null 2>&1 || command -v shasum >/dev/null 2>&1 || {
+    echo "error: no sha256sum/shasum available to verify the download; refusing" >&2; exit 1; }
+
+  base="${release_base_url}/v${version}"
   tmp="$(mktemp -d)"
   # shellcheck disable=SC2064
   trap "rm -rf '$tmp'" RETURN
-  echo "==> Fetching prebuilt binaries ($archive) from $binaries_repo_url"
-  if ! git clone --depth 1 "$binaries_repo_url" "$tmp/bin" >/dev/null 2>&1; then
-    echo "error: could not clone $binaries_repo_url — do you have access to that private repo?" >&2
-    exit 1
-  fi
-  rel="$tmp/bin/v${version}"
-  [ -f "$rel/$archive" ] || { echo "error: $archive not found in the binaries repo (v${version})" >&2; exit 1; }
-  echo "==> Verifying SHA-256 checksums"
-  if command -v sha256sum >/dev/null 2>&1; then
-    ( cd "$rel" && sha256sum -c SHA256SUMS >/dev/null ) || { echo "error: checksum verification failed" >&2; exit 1; }
-  elif command -v shasum >/dev/null 2>&1; then
-    ( cd "$rel" && shasum -a 256 -c SHA256SUMS >/dev/null ) || { echo "error: checksum verification failed" >&2; exit 1; }
+
+  echo "==> Fetching release v${version} (${os}/${arch}) from ${base}"
+  curl -fsSL --max-time 60 -o "$tmp/checksums.txt" "$base/checksums.txt" || {
+    echo "error: could not download checksums.txt for v${version}" >&2; exit 1; }
+
+  # Verify the signature over checksums.txt before trusting any digest in
+  # it. Absent cosign this degrades to checksum-only, which is same-origin
+  # and therefore weaker — warn rather than fail, matching the plugin.
+  if command -v cosign >/dev/null 2>&1; then
+    if curl -fsSL --max-time 30 -o "$tmp/checksums.txt.sigstore.json" "$base/checksums.txt.sigstore.json" 2>/dev/null; then
+      echo "==> Verifying cosign signature over checksums.txt"
+      cosign verify-blob \
+        --bundle "$tmp/checksums.txt.sigstore.json" \
+        --certificate-identity-regexp '^https://github\.com/malanta-ai/Malanta-TrustGate/' \
+        --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+        "$tmp/checksums.txt" >/dev/null 2>&1 || {
+          echo "error: cosign signature verification FAILED for checksums.txt — refusing" >&2; exit 1; }
+    fi
   else
-    echo "error: no sha256sum/shasum available to verify the download; refusing" >&2
-    exit 1
+    echo "note: cosign not found — verifying by SHA-256 against the release's own checksums.txt only." >&2
   fi
+
   mkdir -p dist
-  tar -xzf "$rel/$archive" -C dist/
+  for name in "${binaries[@]}"; do
+    asset="${name}_${os}_${arch}"
+    curl -fsSL --max-time 120 -o "$tmp/$asset" "$base/$asset" || {
+      echo "error: could not download $asset from v${version}" >&2; exit 1; }
+    expected="$(awk -v a="$asset" '$2 == a {print $1}' "$tmp/checksums.txt" | head -1)"
+    [ -n "$expected" ] || { echo "error: $asset is not listed in checksums.txt; refusing" >&2; exit 1; }
+    actual="$(sha256_of "$tmp/$asset")"
+    [ "$expected" = "$actual" ] || {
+      echo "error: checksum mismatch for $asset (expected $expected, got $actual) — possible tampering; refusing" >&2; exit 1; }
+    mv "$tmp/$asset" "dist/$name"
+    chmod +x "dist/$name"
+  done
+  echo "==> Verified ${#binaries[@]} binaries against checksums.txt"
 }
 
 if [[ $prebuilt -eq 1 ]]; then
@@ -112,15 +162,6 @@ else
   mkdir -p dist
   go build -o dist/ ./cmd/...
 fi
-
-binaries=(
-  trustgate-before-prompt
-  trustgate-before-shell
-  trustgate-before-mcp
-  trustgate-before-read-file
-  trustgate-before-tool-use
-  trustgate
-)
 
 echo "==> Installing binaries to $bin_dir"
 for bin in "${binaries[@]}"; do

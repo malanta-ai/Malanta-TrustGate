@@ -245,11 +245,12 @@ export MALANTA_API_KEY=...   # or just run the script and you'll be prompted
 ./scripts/install-hooks.sh   # --reset-key to overwrite a key; --prebuilt to skip building (no Go)
 ```
 
-No Go toolchain? `./scripts/install-hooks.sh --prebuilt` downloads the
-matching prebuilt binaries for your OS/arch from the internal binaries repo
-(`malanta-ai/Malanta-TrustGate-Binaries`), verifies their SHA-256, and
-installs those — everything else (hooks.json, skill, key setup) is identical.
-Requires access to that private repo.
+No Go toolchain? `./scripts/install-hooks.sh --prebuilt` downloads your
+OS/arch's binaries from the GitHub release matching this checkout's version
+and verifies each one against that release's `checksums.txt`, which is
+itself cosign-signed — if the `cosign` CLI is on your PATH the signature is
+checked too, and a mismatch refuses the install. Everything else
+(hooks.json, skill, key setup) is identical.
 
 Key storage itself is handled by `trustgate setup` (installed alongside
 the hook binaries) — you can re-run it anytime without re-running the

@@ -4,6 +4,35 @@ All notable changes to Malanta TrustGate are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] — 2026-07-31
+
+No change to hook behavior — the binaries are functionally identical to
+`0.1.0`. This release exists so the packaging fixes below ship against a
+tag whose source matches them exactly.
+
+### Added
+
+- **The plugin registers `beforeSubmitPrompt`.** It wired only the four
+  execution hooks, so a plugin user in `warn` mode — the default — silently
+  lost the prompt-layer early warning the README documents. Registered
+  `failClosed: false`, because a prompt-layer miss must never stop you from
+  submitting a prompt, and the `sessionStart` warm-up now pre-resolves its
+  binary too.
+
+### Changed
+
+- **`--prebuilt` / `-Prebuilt` install from this repository's signed
+  release.** Both installers previously cloned a separate private binaries
+  repo, which was unreachable for anyone outside the org. They now download
+  the same artifacts the plugin resolver uses, verifying each binary against
+  the release's `checksums.txt` and, when the `cosign` CLI is present, the
+  signature over that file.
+
+### Fixed
+
+- **The Marketplace listing's logo now renders.** The manifest declared it
+  under `icon`, but Cursor's plugin schema reads `logo`.
+
 ## [0.1.0] — 2026-07-30
 
 First public release. TrustGate checks where an AI coding agent is about to

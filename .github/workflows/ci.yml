@@ -59,6 +59,22 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: ./scripts/check-no-secrets.sh
 
+      - name: Parse-check the PowerShell installer
+        # The Windows installer is the one shipped script no other job
+        # touches — bash -n covers install-hooks.sh, and Go tooling covers
+        # everything else, so a syntax error here would only surface on a
+        # user's machine. That already happened once (the UTF-8 BOM bug
+        # found during a live Windows install). Parsing is not running: it
+        # catches malformed syntax, not bad behavior.
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $errs = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "scripts/install-hooks.ps1", [ref]$null, [ref]$errs) | Out-Null
+          if ($errs) { $errs | ForEach-Object { $_.Message }; exit 1 }
+          Write-Host "install-hooks.ps1 parses cleanly"
+
       - name: Set up Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:

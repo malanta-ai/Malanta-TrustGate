@@ -21,14 +21,14 @@
 #   pwsh -File scripts\install-hooks.ps1 -Prebuilt
 #
 #   -Prebuilt   Don't build from source (no Go toolchain needed). Download
-#               the matching prebuilt binaries for this arch from the internal
-#               binaries repo (malanta-ai/Malanta-TrustGate-Binaries), verify
-#               their SHA-256, and install those. Requires access to that repo.
+#               this arch's binaries from the GitHub release matching the
+#               version in .cursor-plugin/plugin.json, verify each against
+#               that release's signed checksums.txt, and install those.
 #
 # Requirements:
 #   - PowerShell 5.1 or 7+ (works in both).
 #   - Go 1.25+ on PATH for a source build (`go version` must succeed), OR
-#     -Prebuilt (needs git + access to the binaries repo instead).
+#     -Prebuilt (needs network access to github.com instead).
 
 [CmdletBinding()]
 param(
@@ -47,7 +47,20 @@ $cfgDir    = Join-Path $env:USERPROFILE ".config\trustgate"
 $cursorDir = Join-Path $env:USERPROFILE ".cursor"
 $keyFile   = Join-Path $cfgDir "env"
 
-$binariesRepoUrl = "https://github.com/malanta-ai/Malanta-TrustGate-Binaries.git"
+# Release download base (used only by -Prebuilt). Overridable for testing
+# against a local fixture, the same escape hatch the plugin resolver has.
+$releaseBaseUrl = if ($env:TRUSTGATE_RELEASE_BASE_URL) { $env:TRUSTGATE_RELEASE_BASE_URL } else { "https://github.com/malanta-ai/Malanta-TrustGate/releases/download" }
+
+# The five hook binaries plus the trustgate admin CLI. Declared before the
+# build/download step because -Prebuilt fetches exactly this set.
+$binaries = @(
+    "trustgate-before-prompt",
+    "trustgate-before-shell",
+    "trustgate-before-mcp",
+    "trustgate-before-read-file",
+    "trustgate-before-tool-use",
+    "trustgate"
+)
 
 New-Item -ItemType Directory -Force -Path $binDir, $cfgDir, $cursorDir | Out-Null
 
@@ -57,9 +70,11 @@ New-Item -ItemType Directory -Force -Path $binDir, $cfgDir, $cursorDir | Out-Nul
 & icacls $cfgDir /inheritance:r /grant:r "$($env:USERNAME):F" | Out-Null
 
 if ($Prebuilt) {
-    # Download prebuilt binaries instead of building — the no-Go path.
-    # Clones the internal binaries repo, verifies SHA-256, extracts this
-    # arch's zip into dist\ so the install step below is identical.
+    # Download prebuilt binaries instead of building - the no-Go path.
+    # Same artifacts and same verification chain the Marketplace plugin's
+    # resolver uses (hooks/scripts/lib/ensure-binary.sh): SHA-256 against
+    # the release's checksums.txt, plus a cosign signature over that file
+    # when the cosign CLI is present. One release, no second channel.
     $version = (Get-Content -Raw (Join-Path $repoRoot ".cursor-plugin\plugin.json") | ConvertFrom-Json).version
     if (-not $version) { Write-Error "could not read plugin version from .cursor-plugin/plugin.json"; exit 1 }
     switch ($env:PROCESSOR_ARCHITECTURE) {
@@ -67,22 +82,54 @@ if ($Prebuilt) {
         "ARM64" { $arch = "arm64" }
         default { Write-Error "unsupported arch $($env:PROCESSOR_ARCHITECTURE)"; exit 1 }
     }
-    $archive = "trustgate_${version}_windows_${arch}.zip"
+    $base = "$releaseBaseUrl/v$version"
     $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("tg-prebuilt-" + [System.Guid]::NewGuid().ToString())
     New-Item -ItemType Directory -Force -Path $tmp | Out-Null
     try {
-        Write-Host "==> Fetching prebuilt binaries ($archive) from $binariesRepoUrl"
-        & git clone --depth 1 $binariesRepoUrl (Join-Path $tmp "bin") 2>$null
-        if ($LASTEXITCODE -ne 0) { Write-Error "could not clone $binariesRepoUrl - do you have access to that private repo?"; exit 1 }
-        $rel = Join-Path $tmp "bin\v$version"
-        $archivePath = Join-Path $rel $archive
-        if (-not (Test-Path $archivePath)) { Write-Error "$archive not found in the binaries repo (v$version)"; exit 1 }
-        Write-Host "==> Verifying SHA-256 checksum"
-        $expected = (Select-String -Path (Join-Path $rel "SHA256SUMS") -Pattern ([regex]::Escape($archive)) | Select-Object -First 1).Line.Split(" ")[0].Trim()
-        $actual = (Get-FileHash -Algorithm SHA256 -Path $archivePath).Hash.ToLower()
-        if ($expected -ne $actual) { Write-Error "checksum verification failed for $archive (expected $expected, got $actual)"; exit 1 }
+        Write-Host "==> Fetching release v$version (windows/$arch) from $base"
+        $sumsPath = Join-Path $tmp "checksums.txt"
+        Invoke-WebRequest -Uri "$base/checksums.txt" -OutFile $sumsPath -UseBasicParsing
+
+        # Verify the signature over checksums.txt before trusting any digest
+        # in it. Absent cosign this degrades to checksum-only, which is
+        # same-origin and therefore weaker - warn rather than fail.
+        if (Get-Command cosign -ErrorAction SilentlyContinue) {
+            $bundlePath = Join-Path $tmp "checksums.txt.sigstore.json"
+            try {
+                Invoke-WebRequest -Uri "$base/checksums.txt.sigstore.json" -OutFile $bundlePath -UseBasicParsing
+                Write-Host "==> Verifying cosign signature over checksums.txt"
+                & cosign verify-blob --bundle $bundlePath `
+                    --certificate-identity-regexp '^https://github\.com/malanta-ai/Malanta-TrustGate/' `
+                    --certificate-oidc-issuer "https://token.actions.githubusercontent.com" `
+                    $sumsPath 2>$null | Out-Null
+                if ($LASTEXITCODE -ne 0) { Write-Error "cosign signature verification FAILED for checksums.txt - refusing"; exit 1 }
+            }
+            catch {
+                Write-Host "note: this release has no signature bundle; proceeding on SHA-256 only"
+            }
+        }
+        else {
+            Write-Host "note: cosign not found - verifying by SHA-256 against the release's own checksums.txt only."
+        }
+
+        $sums = @{}
+        foreach ($line in (Get-Content $sumsPath)) {
+            $parts = $line -split '\s+', 2
+            if ($parts.Count -eq 2) { $sums[$parts[1].Trim()] = $parts[0].Trim().ToLower() }
+        }
+
         New-Item -ItemType Directory -Force -Path "dist" | Out-Null
-        Expand-Archive -Path $archivePath -DestinationPath "dist" -Force
+        foreach ($name in $binaries) {
+            $asset = "${name}_windows_${arch}.exe"
+            $assetPath = Join-Path $tmp $asset
+            Invoke-WebRequest -Uri "$base/$asset" -OutFile $assetPath -UseBasicParsing
+            $expected = $sums[$asset]
+            if (-not $expected) { Write-Error "$asset is not listed in checksums.txt; refusing"; exit 1 }
+            $actual = (Get-FileHash -Algorithm SHA256 -Path $assetPath).Hash.ToLower()
+            if ($expected -ne $actual) { Write-Error "checksum mismatch for $asset (expected $expected, got $actual) - possible tampering; refusing"; exit 1 }
+            Move-Item -Force -Path $assetPath -Destination (Join-Path "dist" "$name.exe")
+        }
+        Write-Host "==> Verified $($binaries.Count) binaries against checksums.txt"
     }
     finally {
         Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
@@ -104,21 +151,13 @@ else {
     }
 }
 
-# Five hook binaries plus the trustgate admin CLI. `trustgate-before-prompt`
-# (beforeSubmitPrompt) is now wired as an early warn-mode surface: it warns
-# on a flagged domain the user types with an action verb, and the accepted
-# grant is honored by the execution hooks (see docs/admin.md §5). It is
-# installed here AND registered in hooks.json in the SAME pass, per
-# AGENTS.md §3 ("Install in the correct order"). Kept aligned with
-# `scripts/install-hooks.sh`.
-$binaries = @(
-    "trustgate-before-prompt",
-    "trustgate-before-shell",
-    "trustgate-before-mcp",
-    "trustgate-before-read-file",
-    "trustgate-before-tool-use",
-    "trustgate"
-)
+# $binaries is declared near the top (the -Prebuilt path needs it too).
+# `trustgate-before-prompt` (beforeSubmitPrompt) is wired as an early
+# warn-mode surface: it warns on a flagged domain the user types with an
+# action verb, and the accepted grant is honored by the execution hooks
+# (see docs/admin.md §5). It is installed here AND registered in hooks.json
+# in the SAME pass, per AGENTS.md §3 ("Install in the correct order").
+# Kept aligned with `scripts/install-hooks.sh`.
 
 Write-Host "==> Installing binaries to $binDir"
 foreach ($name in $binaries) {
