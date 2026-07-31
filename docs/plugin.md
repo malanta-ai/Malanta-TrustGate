@@ -60,9 +60,13 @@ resolves a working binary on demand, in this order:
 If all three fail, the wrapper script exits non-zero and Cursor's
 `failClosed: true` on every enforcement event denies the action — the
 library never fabricates a fake "allow" verdict on a resolution failure.
+The one exception is `beforeSubmitPrompt`, registered `failClosed: false`
+for the reason described in the README: a prompt-layer miss must never stop
+you from submitting a prompt, and the execution hooks remain the
+enforcement boundary regardless.
 
-A `sessionStart` hook (`hooks/scripts/warmup.sh`) pre-resolves the four
-execution-hook binaries (shell, MCP, read-file, tool-use) once per session
+A `sessionStart` hook (`hooks/scripts/warmup.sh`) pre-resolves every hook
+binary (shell, MCP, read-file, tool-use, prompt) once per session
 in the background, so the odds of the *first real* enforcement call
 hitting the slow (download/build) path are low.
 The warm-up is explicitly `failClosed: false` and always exits 0 — a
