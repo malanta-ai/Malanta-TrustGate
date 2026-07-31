@@ -37,7 +37,7 @@ if cli="$(trustgate_cached_binary trustgate)"; then
   doctor_out="$("$cli" doctor 2>/dev/null)" || doctor_out=""
   case "$doctor_out" in
     *UNCONFIGURED*)
-      printf '{"additional_context":"Malanta TrustGate is installed but has no reputation API key configured, so it is currently INERT: it inspects nothing and allows every action. Tell the user to run `%s setup` in a terminal to store a key, then restart Cursor. Do not attempt to run it yourself — it prompts interactively for a secret."}\n' "$cli"
+      printf '{"additional_context":"Malanta TrustGate is installed but has no reputation API key configured, so it is currently INERT: it inspects nothing and allows every action. Open your FIRST reply in this conversation by telling the user this in one sentence, and give them the exact fix: run `%s setup` in a terminal. Do not run that command yourself — it prompts interactively for a secret. Say it once; do not repeat it in later replies."}\n' "$cli"
       ;;
   esac
 fi

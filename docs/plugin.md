@@ -79,10 +79,17 @@ itself.
 
 The same hook is where an unconfigured install announces itself. If the
 CLI is already cached and reports no API key, the warm-up returns an
-`additional_context` string telling the agent that TrustGate is inert and
-what command fixes it. Without that, a user who never ran `setup` gets a
-plugin that silently allows everything — the one failure mode a security
-tool must not have.
+`additional_context` string telling the agent that TrustGate is inert,
+what command fixes it, and to say so in its first reply. Without that, a
+user who never ran `setup` gets a plugin that silently allows everything
+— the one failure mode a security tool must not have.
+
+Two caveats on that notice. It is *advice to the agent*, not a UI
+element: it reaches the model's context, and whether it reaches the user
+depends on the model following the instruction. And it is skipped on a
+session where the CLI is not yet cached, since checking would mean
+downloading a binary inline just to print a warning — so on a brand-new
+install the notice appears from the second session onward.
 
 ## Supply chain
 
