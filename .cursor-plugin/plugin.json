@@ -2,7 +2,7 @@
   "name": "malanta-trustgate",
   "displayName": "Malanta TrustGate",
   "description": "Checks where your agent is about to send bytes — domains, IPs, and GitHub repositories — against a reputation provider before the action runs, and blocks what comes back flagged. Covers shell commands, MCP calls, file reads, and WebFetch/WebSearch. Malanta by default, or bring your own vendor.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "Malantai Ltd.",
     "email": "hello@malanta.ai"
