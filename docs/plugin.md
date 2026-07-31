@@ -97,15 +97,34 @@ tool must not have.
   `checksums.txt`, scoped to this repo's GitHub Actions OIDC identity —
   see [`.goreleaser.yaml`](../.goreleaser.yaml) and
   [`.github/workflows/release.yml`](../.github/workflows/release.yml) for
-  how releases are signed. If `cosign` is **not** installed, the wrapper
-  proceeds on checksum-only verification and prints a warning to stderr.
-  This is a deliberate trade-off: requiring `cosign` as a hard dependency
-  would break the "just works" install story for the common case where
-  it isn't already on a developer's machine. **Known gap:** a network
-  attacker who can both serve a malicious binary AND forge (or omit)
-  `checksums.txt` in the same request, on a machine without `cosign`
-  installed, is not caught by this scheme — HTTPS-to-github.com is the
-  remaining defense in that scenario. Installing `cosign` closes this gap.
+  how releases are signed. The CLI is looked up on `PATH` and in the
+  standard install locations (`/opt/homebrew/bin`, `/usr/local/bin`,
+  `~/go/bin`, `~/.local/bin`), because hooks are spawned by a GUI
+  application and do not inherit your shell's `PATH`; set
+  `TRUSTGATE_COSIGN_BIN` for anywhere else. If `cosign` is **not** found,
+  the wrapper proceeds on checksum-only verification and prints a warning
+  to stderr. This is a deliberate trade-off: requiring `cosign` as a hard
+  dependency would break the "just works" install story for the common
+  case where it isn't already on a developer's machine. **Known gap:** a
+  network attacker who can both serve a malicious binary AND forge (or
+  omit) `checksums.txt` in the same request, on a machine without
+  `cosign` installed, is not caught by this scheme — HTTPS-to-github.com
+  is the remaining defense in that scenario. Installing `cosign` closes
+  this gap.
+- **`TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE=true` makes the signature
+  mandatory** (default: unset, i.e. best-effort as above). With it set, a
+  missing `cosign`, a release with no signature bundle, and a failed
+  verification are all refusals rather than warnings — closing the gap
+  described above at the cost of requiring `cosign` on every machine.
+  Unlike TrustGate's other settings, this one is read straight from the
+  env files by the wrapper script (`/etc/trustgate/env` and
+  `~/.config/trustgate/env`) as well as the process environment, since it
+  takes effect before any Go binary exists to read them; an MDM writing
+  the system file turns it on fleet-wide. Also unlike the others, **any**
+  layer that asks for signatures wins, so a per-user file cannot downgrade
+  a system-wide requirement. A refusal still falls through to
+  building from source, which needs no signature because it compiles the
+  reviewed repository itself.
 - **No silent auto-update — with a caveat.** The wrapper always resolves to
   the version pinned in `.cursor-plugin/plugin.json`; bumping that version (a
   normal plugin update via Cursor) is the only way the resolver targets a

@@ -152,6 +152,31 @@ fi
 assert_refused "a missing checksums.txt is refused" "$work_dir/cache-nocheck"
 kill "$server3_pid" 2>/dev/null || true
 
+echo "=== 4. TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE with no cosign ==="
+# Point the cosign lookup at a path that cannot exist, so the assertion is
+# about the flag rather than about whatever the test machine happens to
+# have installed. The fake release serves no signature bundle either way.
+base_url="http://127.0.0.1:${port}"
+require_cache="$work_dir/cache-require-sig"
+mkdir -p "$require_cache"
+stripped_path="$(printf '%s' "$PATH" | tr ':' '\n' | grep -v -E '/go(/bin)?$' | paste -sd: -)"
+if out="$(PATH="$stripped_path" \
+    TRUSTGATE_COSIGN_BIN="$work_dir/no-such-cosign" \
+    TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE=true \
+    TRUSTGATE_PLUGIN_RELEASE_BASE_URL="$base_url" \
+    TRUSTGATE_PLUGIN_CACHE_DIR="$require_cache" \
+    ensure_binary fake-trustgate-tool 2>"$require_cache/stderr.log")"; then
+  echo "FAIL: require-signature should refuse a checksum-only install, but it succeeded with $out"
+  fail_count=$((fail_count + 1))
+else
+  echo "PASS: require-signature refuses when cosign is unavailable (refused as expected: $(tail -1 "$require_cache/stderr.log"))"
+fi
+
+echo "=== 5. Same conditions, flag unset ==="
+# Guards the default: the flag must be what refuses above, not the missing
+# cosign, which on its own is only a warning.
+assert_success "checksum-only install is accepted when the flag is unset" "$work_dir/cache-default-sig"
+
 if [[ $fail_count -ne 0 ]]; then
   echo "test-ensure-binary: $fail_count assertion(s) failed" >&2
   exit 1

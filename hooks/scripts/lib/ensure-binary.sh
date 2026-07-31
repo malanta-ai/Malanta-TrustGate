@@ -16,7 +16,8 @@
 #      warning, not a hard failure — see docs/plugin.md's Supply Chain
 #      section for the trade-off this accepts (checksum-only fallback
 #      rather than requiring a new hard dependency for the "just works"
-#      install story).
+#      install story). Set TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE=true to
+#      invert that trade-off and refuse anything unsigned.
 #   3. `go build` from this same checked-out repo (the plugin IS the
 #      repo — see docs/plugin.md) if a Go toolchain is on PATH.
 #
@@ -79,7 +80,15 @@ _trustgate_sha256() {
 # is invisible and every download silently degrades to checksum-only —
 # the weaker path, taken by the users who did the right thing and
 # installed cosign. Probing the standard locations costs one stat each.
+#
+# TRUSTGATE_COSIGN_BIN overrides the search entirely, for a cosign kept
+# somewhere non-standard (and for tests, which use it to simulate absence).
 _trustgate_find_cosign() {
+  if [[ -n "${TRUSTGATE_COSIGN_BIN:-}" ]]; then
+    [[ -x "${TRUSTGATE_COSIGN_BIN}" ]] || return 1
+    printf '%s\n' "${TRUSTGATE_COSIGN_BIN}"
+    return 0
+  fi
   if command -v cosign >/dev/null 2>&1; then
     command -v cosign
     return 0
@@ -97,6 +106,43 @@ _trustgate_find_cosign() {
     fi
   done
   return 1
+}
+
+# _trustgate_require_signature — true when a downloaded binary must carry a
+# verified cosign signature, so a missing cosign CLI or signature bundle is
+# a refusal instead of the default warning.
+#
+# Default OFF: requiring it would turn a one-click plugin install into
+# "first install Sigstore." An operator who wants the strong guarantee
+# fleet-wide sets TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE=true.
+#
+# Read from the process environment AND the env files the Go binaries
+# already read, because this resolver runs before any of them and an MDM
+# writing /etc/trustgate/env is the whole point. Deliberately NOT the usual
+# last-layer-wins precedence: any layer asking for signatures wins, so a
+# per-user file cannot quietly downgrade a system-wide requirement. Only
+# this one key is read — the files also hold the API key, which has no
+# business in this process.
+_trustgate_require_signature() {
+  local v file
+  for v in "${TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE:-}" \
+           "$(_trustgate_env_file_value "$HOME/.config/trustgate/env")" \
+           "$(_trustgate_env_file_value /etc/trustgate/env)"; do
+    case "$v" in
+      [Tt][Rr][Uu][Ee]|1|[Yy][Ee][Ss]) return 0 ;;
+    esac
+  done
+  return 1
+}
+
+# _trustgate_env_file_value <file> — prints the last value assigned to
+# TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE in a dotenv-style file, ignoring
+# comments and surrounding quotes. Never sources the file.
+_trustgate_env_file_value() {
+  local file="$1"
+  [[ -r "$file" ]] || return 0
+  sed -n 's/^[[:space:]]*TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE[[:space:]]*=[[:space:]]*//p' "$file" \
+    | tail -1 | tr -d '"'"'" | awk '{print $1}'
 }
 
 # _trustgate_owned_by_me <path> — true if path is owned by the current uid.
@@ -174,7 +220,8 @@ _trustgate_download_verified() {
   # signature — see .goreleaser.yaml). See the file header comment for
   # why a missing `cosign` CLI degrades to a warning rather than a hard
   # failure.
-  local cosign_bin
+  local cosign_bin require_sig=1
+  _trustgate_require_signature && require_sig=0
   if cosign_bin="$(_trustgate_find_cosign)"; then
     if curl -fsSL --max-time 20 -o "$tmp_dir/checksums.txt.sigstore.json" "$base_url/checksums.txt.sigstore.json" 2>/dev/null; then
       if ! "$cosign_bin" verify-blob \
@@ -185,9 +232,15 @@ _trustgate_download_verified() {
         echo "trustgate plugin: cosign signature verification FAILED for checksums.txt — refusing (see $(cat "$tmp_dir/cosign.err" 2>/dev/null))" >&2
         return 1
       fi
+    elif [[ $require_sig -eq 0 ]]; then
+      echo "trustgate plugin: TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE is set but this release has no signature bundle for $asset; refusing" >&2
+      return 1
     else
       echo "trustgate plugin: cosign is installed but this release has no signature bundle; proceeding on SHA256-only verification" >&2
     fi
+  elif [[ $require_sig -eq 0 ]]; then
+    echo "trustgate plugin: TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE is set but no cosign CLI was found (PATH, standard locations, or TRUSTGATE_COSIGN_BIN); refusing to install $asset on checksum-only verification" >&2
+    return 1
   else
     # Say so when the download was verified by same-origin checksum only
     # (no independent signature). Install cosign, or use the

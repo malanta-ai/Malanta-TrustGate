@@ -6,6 +6,22 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **`TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE=true` makes cosign verification
+  mandatory** for plugin binary downloads (default off). A missing cosign,
+  an unsigned release, or a failed verification becomes a refusal instead
+  of a warning, closing the same-origin gap where an actor who can serve a
+  malicious binary can serve a matching `checksums.txt`. Off by default
+  because requiring it would turn a one-click install into "first install
+  Sigstore"; on, it is the fleet-wide guarantee an enterprise wants. The
+  wrapper reads it from `/etc/trustgate/env` and `~/.config/trustgate/env`
+  as well as the process environment, since it applies before any Go
+  binary exists to read config — and any layer that asks for signatures
+  wins, so a per-user file cannot downgrade an MDM-set requirement.
+  `TRUSTGATE_COSIGN_BIN` points at a cosign kept outside the standard
+  locations.
+
 ### Changed
 
 - **cosign is found where it is actually installed.** The plugin resolver
