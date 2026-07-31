@@ -1,18 +1,45 @@
 #!/usr/bin/env bash
-# sessionStart warm-up: pre-resolves (downloads or builds) every hook
-# binary once per session so the FIRST real enforcement call doesn't
-# pay the download/build latency inline. Deliberately non-blocking of
-# the session and NEVER fail-closed (see hooks.json: failClosed: false
-# on this entry) — a warm-up miss just means the next real hook call
-# resolves the binary itself (slower, but correct). Always exits 0.
+# sessionStart warm-up. Two jobs, neither of which may delay the session:
+#
+#   1. Pre-resolve every hook binary (plus the admin CLI) so the FIRST real
+#      enforcement call doesn't pay download/build latency inline. The work
+#      runs DETACHED, in warmup-worker.sh: resolving six binaries can exceed
+#      this hook's timeout, and a killed warm-up used to leave some binaries
+#      unresolved — which is exactly the inline download it exists to avoid.
+#      Cursor treats sessionStart as fire-and-forget, so returning early
+#      costs nothing.
+#
+#   2. Tell the agent when TrustGate is installed but has no API key, via
+#      the `additional_context` field sessionStart supports. Unconfigured
+#      TrustGate is INERT — it allows everything — and the failure mode is
+#      silent, so a user can believe they are protected when they are not.
+#      Only checked when the CLI is already cached (never downloaded here),
+#      so a first session stays fast and a later one carries the notice.
+#
+# NEVER fail-closed (hooks.json sets failClosed:false on this entry) and
+# always exits 0.
 set -uo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib/ensure-binary.sh
 source "$script_dir/lib/ensure-binary.sh"
 
-for name in trustgate-before-shell trustgate-before-mcp trustgate-before-read-file trustgate-before-tool-use trustgate-before-prompt; do
-  ensure_binary "$name" >/dev/null 2>&1 &
-done
-wait
+# nohup + disown so the worker survives this hook's timeout. Neither is a
+# guarantee if the whole process group is killed, but both are portable —
+# macOS ships no setsid.
+nohup bash "$script_dir/warmup-worker.sh" >/dev/null 2>&1 &
+disown 2>/dev/null || true
+
+# Capture and match, rather than piping into `grep -q`: the library sets
+# pipefail, and grep -q exits on first match, so the producer takes SIGPIPE
+# and the pipeline reports 141 — making the notice fire only when doctor
+# happened to finish writing first.
+if cli="$(trustgate_cached_binary trustgate)"; then
+  doctor_out="$("$cli" doctor 2>/dev/null)" || doctor_out=""
+  case "$doctor_out" in
+    *UNCONFIGURED*)
+      printf '{"additional_context":"Malanta TrustGate is installed but has no reputation API key configured, so it is currently INERT: it inspects nothing and allows every action. Tell the user to run `%s setup` in a terminal to store a key, then restart Cursor. Do not attempt to run it yourself — it prompts interactively for a secret."}\n' "$cli"
+      ;;
+  esac
+fi
 
 exit 0

@@ -71,6 +71,34 @@ _trustgate_sha256() {
   fi
 }
 
+# _trustgate_find_cosign — prints an invocable cosign path, or returns 1.
+#
+# PATH alone is not enough here. Hooks are spawned by a GUI application,
+# which on macOS inherits launchd's minimal PATH rather than the user's
+# shell PATH, so a perfectly good cosign in /opt/homebrew/bin or ~/go/bin
+# is invisible and every download silently degrades to checksum-only —
+# the weaker path, taken by the users who did the right thing and
+# installed cosign. Probing the standard locations costs one stat each.
+_trustgate_find_cosign() {
+  if command -v cosign >/dev/null 2>&1; then
+    command -v cosign
+    return 0
+  fi
+  local candidate
+  for candidate in \
+      /opt/homebrew/bin/cosign \
+      /usr/local/bin/cosign \
+      "$HOME/go/bin/cosign" \
+      "$HOME/.local/bin/cosign" \
+      /home/linuxbrew/.linuxbrew/bin/cosign; do
+    if [[ -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
 # _trustgate_owned_by_me <path> — true if path is owned by the current uid.
 # Best-effort: if neither stat flavor is available, returns true (don't
 # block on a missing tool). Used to reject a cache entry a DIFFERENT local
@@ -146,9 +174,10 @@ _trustgate_download_verified() {
   # signature — see .goreleaser.yaml). See the file header comment for
   # why a missing `cosign` CLI degrades to a warning rather than a hard
   # failure.
-  if command -v cosign >/dev/null 2>&1; then
+  local cosign_bin
+  if cosign_bin="$(_trustgate_find_cosign)"; then
     if curl -fsSL --max-time 20 -o "$tmp_dir/checksums.txt.sigstore.json" "$base_url/checksums.txt.sigstore.json" 2>/dev/null; then
-      if ! cosign verify-blob \
+      if ! "$cosign_bin" verify-blob \
           --bundle "$tmp_dir/checksums.txt.sigstore.json" \
           --certificate-identity-regexp '^https://github\.com/malanta-ai/Malanta-TrustGate/' \
           --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
@@ -160,17 +189,30 @@ _trustgate_download_verified() {
       echo "trustgate plugin: cosign is installed but this release has no signature bundle; proceeding on SHA256-only verification" >&2
     fi
   else
-    # The docs promised a warning on the checksum-only path, but the code
-    # was silent when cosign was ABSENT. Emit it so the operator knows
-    # the download was verified by same-origin checksum only (no independent
-    # signature). Install cosign, or use the build-from-source fallback, for
-    # a stronger guarantee. See docs/plugin.md's Supply Chain section.
-    echo "trustgate plugin: cosign not found — $asset verified by SHA256 against same-origin checksums.txt only (no signature check). See docs/plugin.md." >&2
+    # Say so when the download was verified by same-origin checksum only
+    # (no independent signature). Install cosign, or use the
+    # build-from-source fallback, for a stronger guarantee. See
+    # docs/plugin.md's Supply Chain section.
+    echo "trustgate plugin: cosign not found on PATH or in the standard install locations — $asset verified by SHA256 against same-origin checksums.txt only (no signature check). See docs/plugin.md." >&2
   fi
 
   mv "$tmp_dir/$asset" "$out" || return 1
   chmod +x "$out"
   return 0
+}
+
+# trustgate_cached_binary <name> — prints the path to an already-cached,
+# trustworthy copy of <name>, or returns 1. Never downloads and never
+# builds, so a caller that only wants a binary IF it is already free can
+# ask without paying for one.
+trustgate_cached_binary() {
+  local name="$1" plugin_root version cache_dir bin_path
+  plugin_root="$(_trustgate_plugin_root)"
+  version="$(_trustgate_plugin_version "$plugin_root")"
+  cache_dir="${TRUSTGATE_PLUGIN_CACHE_DIR:-$HOME/.cache/trustgate/plugin/$version}"
+  bin_path="$cache_dir/$name"
+  _trustgate_cached_binary_trustworthy "$cache_dir" "$bin_path" || return 1
+  printf '%s\n' "$bin_path"
 }
 
 # ensure_binary <name> — see file header.

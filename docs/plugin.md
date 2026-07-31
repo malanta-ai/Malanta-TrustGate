@@ -66,12 +66,23 @@ you from submitting a prompt, and the execution hooks remain the
 enforcement boundary regardless.
 
 A `sessionStart` hook (`hooks/scripts/warmup.sh`) pre-resolves every hook
-binary (shell, MCP, read-file, tool-use, prompt) once per session
-in the background, so the odds of the *first real* enforcement call
-hitting the slow (download/build) path are low.
+binary (shell, MCP, read-file, tool-use, prompt) plus the `trustgate`
+admin CLI once per session, so the odds of the *first real* enforcement
+call hitting the slow (download/build) path are low. The downloads run
+detached (`hooks/scripts/warmup-worker.sh`) because resolving six binaries
+can outlast this hook's timeout, and a warm-up killed halfway leaves
+exactly the inline download it exists to prevent; Cursor treats
+`sessionStart` as fire-and-forget, so returning early costs nothing.
 The warm-up is explicitly `failClosed: false` and always exits 0 — a
 warm-up miss just means the next real hook call resolves the binary
 itself.
+
+The same hook is where an unconfigured install announces itself. If the
+CLI is already cached and reports no API key, the warm-up returns an
+`additional_context` string telling the agent that TrustGate is inert and
+what command fixes it. Without that, a user who never ran `setup` gets a
+plugin that silently allows everything — the one failure mode a security
+tool must not have.
 
 ## Supply chain
 
@@ -153,18 +164,26 @@ each developer re-importing manually.
 
 The plugin artifact is **key-free** — the reputation provider's API key
 is never committed, embedded in the plugin, or placed in any
-Cursor-managed field. After installing the plugin:
+Cursor-managed field. You store it yourself with `trustgate setup`, which
+writes `~/.config/trustgate/env`, the same file the plugin's
+wrapper-resolved hook binaries read.
+
+The CLI that runs `setup` comes with the plugin: the session-start
+warm-up resolves it alongside the hook binaries, so after your first
+session it is at
 
 ```bash
-go install github.com/malanta-ai/Malanta-TrustGate/cmd/trustgate@latest
-trustgate setup
+~/.cache/trustgate/plugin/<version>/trustgate setup
 ```
 
-This works from anywhere (no need to locate wherever Cursor cached the
-plugin checkout) and writes the same `~/.config/trustgate/env` the
-plugin's wrapper-resolved hook binaries read. If you installed via the
-standalone installer instead, `trustgate` is already on `PATH` at
-`~/.local/bin/trustgate` — just run `trustgate setup` directly.
+with `<version>` matching the manifest. Until a key is stored, the
+warm-up reminds the agent at the start of every session that TrustGate is
+inert, and names that path.
+
+Two other routes to the same CLI, if you'd rather not use a cache path:
+`go install github.com/malanta-ai/Malanta-TrustGate/cmd/trustgate@latest`
+(needs a Go toolchain), or the standalone installer, which puts it on
+`PATH` at `~/.local/bin/trustgate`.
 
 Enterprises: an MDM profile that writes `/etc/trustgate/env` (see the
 root README's Configuration section) works identically regardless of

@@ -4,6 +4,30 @@ All notable changes to Malanta TrustGate are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **cosign is found where it is actually installed.** The plugin resolver
+  looked for the CLI on `PATH` only. Hooks are spawned by a GUI
+  application, which on macOS inherits launchd's minimal `PATH` rather
+  than the user's shell `PATH`, so a cosign in `/opt/homebrew/bin` or
+  `~/go/bin` was invisible and every download silently degraded to
+  checksum-only verification — penalizing exactly the users who installed
+  cosign. It now probes the standard locations before giving up.
+- **The session-start warm-up no longer loses downloads.** It resolved
+  every binary inside a hook Cursor kills at its timeout, so some were
+  left unresolved and the first MCP call or file read paid an inline
+  download inside a fail-closed hook. The work is now detached and
+  outlives the timeout, which `sessionStart` permits because it is
+  fire-and-forget.
+- **Configuring an API key no longer needs a Go toolchain.** The warm-up
+  resolves the `trustgate` CLI alongside the hook binaries, so
+  `trustgate setup` is available from the plugin's own cache. When no key
+  is configured, the warm-up now returns an `additional_context` notice
+  saying so: an unconfigured TrustGate allows every action, and that was
+  previously silent.
+
 ## [0.1.1] — 2026-07-31
 
 No change to hook behavior — the binaries are functionally identical to
