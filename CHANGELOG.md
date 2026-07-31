@@ -6,10 +6,11 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.1.2] — 2026-07-31
 
-No change to hook behavior — the binaries are byte-for-byte the same code as
-`0.1.1`; nothing under `cmd/`, `internal/`, or `go.mod` changed. This release
-exists so the plugin's binary resolver, which downloads from the release tag
-matching the manifest version, ships against a tag whose source matches it.
+No change to hook behavior — the binaries are functionally identical to
+`0.1.1`, differing only in the version they report; nothing under `cmd/`,
+`internal/`, or `go.mod` changed. This release exists so the plugin's binary
+resolver, which downloads from the release tag named by the manifest version,
+ships against a tag whose source matches it.
 
 ### Added
 
