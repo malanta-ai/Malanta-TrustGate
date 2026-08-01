@@ -10,7 +10,7 @@
   "homepage": "https://github.com/malanta-ai/Malanta-TrustGate",
   "repository": "https://github.com/malanta-ai/Malanta-TrustGate",
   "license": "MIT",
-  "logo": "assets/logo.svg",
+  "logo": "assets/logo.png",
   "keywords": [
     "security",
     "hooks",

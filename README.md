@@ -160,7 +160,7 @@ Malanta-TrustGate/
 ├── hooks/                                    plugin hook config + wrapper scripts
 ├── skills/trustgate/SKILL.md                 plugin-bundled agent skill (operating guide; delivered to installers)
 ├── rules/trustgate-modes.mdc                 plugin-bundled always-on rule (verdict interpretation per mode)
-├── assets/logo.svg                           marketplace icon
+├── assets/                                   marketplace logo (square) + wordmark
 ├── internal/
 │   ├── reputation/  Provider interface + Malanta batch client + generic REST adapter
 │   ├── cache/       SQLite TTL cache, keyed by (provider, kind, value)
