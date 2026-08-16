@@ -179,12 +179,50 @@ fire (ask it to fetch a URL; check `~/.cache/trustgate/decisions.log`).
    submitting (manifest validity, component discoverability, relative
    paths only, README quality).
 
-## Team / Enterprise import
+Note that [cursor.directory](https://cursor.directory) is a **separate,
+community** index — Cursor's plugin docs point there for "community plugins
+and MCP servers", distinct from the official Marketplace at
+`cursor.com/marketplace`. A directory listing does not make a plugin
+installable from Customize → Browse in the app, which surfaces the official
+Marketplace. Being listed in one says nothing about the other.
 
-Cursor Dashboard → Plugins → **Import from Repo**, pointing at this
-repository. Enable **Auto Refresh** (requires the Cursor GitHub App
-to be installed on the repo) so a new tagged release rolls out without
-each developer re-importing manually.
+## Deploying to a team or fleet
+
+**A team marketplace does not depend on the public Marketplace listing.** An
+organization can distribute this plugin to its own developers today, from
+this public repository, and control whether installation is optional or
+mandatory. For a security control that is usually the better mechanism
+anyway: an admin can require it rather than hope developers opt in.
+
+Available on Cursor Teams (one team marketplace) and Enterprise (unlimited).
+
+1. Cursor Dashboard → **Plugins** → **Team Marketplaces** → **Add
+   Marketplace** → **Import from Repo**, pointing at this repository. On
+   Enterprise plans only admins can add team marketplaces.
+2. **Add to Marketplace** to register the plugin from the imported repo.
+3. Under **Marketplace Settings → Marketplace Access**, optionally restrict
+   the audience to selected Organization Groups — useful for piloting with
+   one team before a fleet-wide rollout.
+4. Choose the plugin's installation mode:
+   - **Default Off** — developers discover it and choose to install.
+   - **Default On** — installed by default, developers may opt out.
+   - **Required** — always installed, cannot be uninstalled. This is the
+     mode that matches an enforced security baseline.
+5. Enable **Auto Refresh** so pushes to the tracked branch roll out without
+   each developer re-importing. It requires the Cursor GitHub App on the
+   repository, and re-indexes at most once every 10 minutes. Auto Refresh
+   updates plugins already in the marketplace; adding a brand-new plugin
+   still means re-importing the repository URL.
+
+Two fleet notes specific to TrustGate. Each developer's machine resolves its
+own hook binaries on first session (see [How the plugin resolves its
+binaries](#how-the-plugin-resolves-its-binaries)), so set
+`TRUSTGATE_PLUGIN_REQUIRE_SIGNATURE=true` in `/etc/trustgate/env` via MDM if
+you want every machine to refuse an unsigned download — a per-user file
+cannot downgrade that. And the API key is never distributed through Cursor:
+it travels through the env-file chain described under [Onboarding and the
+API key](#onboarding-and-the-api-key), independent of how the plugin
+arrived.
 
 ## Onboarding and the API key
 

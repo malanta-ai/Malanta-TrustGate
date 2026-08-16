@@ -220,6 +220,11 @@ same source and ship the same binaries — pick whichever fits your setup:
   (or Windows with Git Bash/WSL) — see [`docs/plugin.md`](docs/plugin.md)
   for local testing, submission, and team/enterprise import instructions.
 
+Teams and Enterprise organizations can distribute the plugin to their own
+developers from this repository without waiting on a public Marketplace
+listing, including a **Required** install mode that cannot be opted out of —
+see [Deploying to a team or fleet](docs/plugin.md#deploying-to-a-team-or-fleet).
+
 ### Standalone installer
 
 The installer writes four things, on all platforms:
