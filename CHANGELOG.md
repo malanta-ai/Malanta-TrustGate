@@ -10,6 +10,12 @@ No change to hook behavior. This release rebuilds the binaries on a Go
 toolchain carrying the standard library fixes below; the `0.1.2` binaries
 were built on `go1.26.5` and predate them.
 
+### Added
+
+- **Documented the team-marketplace rollout path** in `docs/plugin.md`, for
+  organizations that want TrustGate on their developers' machines without
+  waiting on a public marketplace listing.
+
 ### Security
 
 - **Bumped the build toolchain to `go1.26.8`.** Clears four Go standard
