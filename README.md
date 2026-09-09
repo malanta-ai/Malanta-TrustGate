@@ -134,7 +134,7 @@ on-disk env file.
 ## Requirements
 
 - **Go 1.25+** (`go version`) — for a source build. `go.mod` sets a `1.25.0`
-  language floor and pins the build toolchain to `1.26.5` (fetched
+  language floor and pins the build toolchain to `1.26.8` (fetched
   automatically with the default `GOTOOLCHAIN=auto`); CI builds on `1.26.x`.
   On macOS 26 / Darwin 25 a current toolchain also avoids a linker/`LC_UUID`
   incompatibility with older Go — see `AGENTS.md`.
@@ -219,6 +219,11 @@ same source and ship the same binaries — pick whichever fits your setup:
   to the installing user's agent automatically. Currently macOS/Linux only
   (or Windows with Git Bash/WSL) — see [`docs/plugin.md`](docs/plugin.md)
   for local testing, submission, and team/enterprise import instructions.
+
+Teams and Enterprise organizations can distribute the plugin to their own
+developers from this repository without waiting on a public Marketplace
+listing, including a **Required** install mode that cannot be opted out of —
+see [Deploying to a team or fleet](docs/plugin.md#deploying-to-a-team-or-fleet).
 
 ### Standalone installer
 
