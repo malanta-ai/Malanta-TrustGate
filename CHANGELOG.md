@@ -4,6 +4,25 @@ All notable changes to Malanta TrustGate are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] — 2026-09-09
+
+No change to hook behavior. This release rebuilds the binaries on a Go
+toolchain carrying the standard library fixes below; the `0.1.2` binaries
+were built on `go1.26.5` and predate them.
+
+### Security
+
+- **Bumped the build toolchain to `go1.26.8`.** Clears four Go standard
+  library advisories, all fixed in `1.26.6`, that `govulncheck` reports as
+  reachable from TrustGate's code: quadratic `resolvePath` in `net/url`
+  (CVE-2026-56860), unbounded post-handshake messages in `crypto/tls`
+  (CVE-2026-56862), unbounded recursion depth in `encoding/asn1`
+  (CVE-2026-33818), and punycode label handling in `net/http`'s vendored
+  `x/net/idna` (CVE-2026-39821). All four are denial-of-service class. The
+  direct `golang.org/x/net` dependency was already at `v0.57.0`, past the
+  idna fix, so domain normalization was never affected — only the older
+  copy vendored into the standard library.
+
 ## [0.1.2] — 2026-07-31
 
 No change to hook behavior — the binaries are functionally identical to

@@ -134,7 +134,7 @@ on-disk env file.
 ## Requirements
 
 - **Go 1.25+** (`go version`) — for a source build. `go.mod` sets a `1.25.0`
-  language floor and pins the build toolchain to `1.26.5` (fetched
+  language floor and pins the build toolchain to `1.26.8` (fetched
   automatically with the default `GOTOOLCHAIN=auto`); CI builds on `1.26.x`.
   On macOS 26 / Darwin 25 a current toolchain also avoids a linker/`LC_UUID`
   incompatibility with older Go — see `AGENTS.md`.
