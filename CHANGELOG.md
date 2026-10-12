@@ -6,6 +6,21 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.1.4] — 2026-10-12
 
+### Security
+
+- **Bumped `golang.org/x/net` to `v0.60.0` and the build toolchain to
+  `go1.26.9`,** clearing six advisories `govulncheck` reports as
+  reachable through `internal/auditsink`'s HTTP client. Five are HTTP/2
+  issues in `golang.org/x/net` (GO-2026-6617 HPACK encoder race,
+  GO-2026-6612 double flow-control refund, GO-2026-6611 CPU consumption
+  from repeated window changes, GO-2026-6610 malformed framing headers);
+  two are standard-library issues fixed in `go1.26.9` (GO-2026-6613 /
+  CVE-2026-94439 HTTP/1 connection desynchronization after a 2xx
+  CONNECT, and GO-2026-6608 / CVE-2026-94440 memory-limit bypass parsing
+  MIME headers). All are server- and transport-side exposure on the
+  optional audit-sink path rather than the hook verdict path, and
+  `govulncheck` now reports no findings.
+
 ### Fixed
 
 - **A file larger than 256 KiB no longer blocks its own read.** Cursor
