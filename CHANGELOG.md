@@ -4,6 +4,49 @@ All notable changes to Malanta TrustGate are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] — 2026-10-12
+
+### Security
+
+- **Bumped `golang.org/x/net` to `v0.60.0` and the build toolchain to
+  `go1.26.9`,** clearing six advisories `govulncheck` reports as
+  reachable through `internal/auditsink`'s HTTP client. Five are HTTP/2
+  issues in `golang.org/x/net` (GO-2026-6617 HPACK encoder race,
+  GO-2026-6612 double flow-control refund, GO-2026-6611 CPU consumption
+  from repeated window changes, GO-2026-6610 malformed framing headers);
+  two are standard-library issues fixed in `go1.26.9` (GO-2026-6613 /
+  CVE-2026-94439 HTTP/1 connection desynchronization after a 2xx
+  CONNECT, and GO-2026-6608 / CVE-2026-94440 memory-limit bypass parsing
+  MIME headers). All are server- and transport-side exposure on the
+  optional audit-sink path rather than the hook verdict path, and
+  `govulncheck` now reports no findings.
+
+### Fixed
+
+- **A file larger than 256 KiB no longer blocks its own read.** Cursor
+  sends file contents inline, and the hook runner's stdin bound truncated
+  any larger payload mid-JSON; the resulting decode error surfaced as
+  `payload: unexpected EOF` and denied the read. Large lockfiles — the
+  files this hook most wants to inspect — were the common casualty. The
+  read-file hook now carries its own 2 MiB bound, clearing the
+  extractor's existing 1 MiB content cap with room for JSON escaping, so
+  content in that range is scanned and content above it takes the
+  extractor's documented skip-and-allow path. Every other hook keeps the
+  256 KiB default. A payload that still exceeds the bound now names the
+  size in the logged reason instead of only `unexpected EOF`.
+- **Hook errors respect the policy mode.** The bootstrap path (config
+  load, payload decode, cache open) decided allow/deny from
+  `fail_closed` alone, without consulting the mode, so an error
+  hard-denied in `warn` while the decision log labelled it `warn`. It
+  also bypassed the stage that records warn's pending marker, so the
+  documented deny-once-then-allow-on-retry never happened — retrying
+  reproduced the identical error and left no way to clear the block.
+  These failures now apply the same mode policy as a provider error:
+  `warn` fails open with the error recorded as a warning, `report-only`
+  never blocks, and `enforce` keeps the fail-closed deny. Malformed
+  input remains a deny under `fail_closed` on every hook, including
+  `beforeSubmitPrompt`.
+
 ## [0.1.3] — 2026-09-09
 
 No change to hook behavior. This release rebuilds the binaries on a Go

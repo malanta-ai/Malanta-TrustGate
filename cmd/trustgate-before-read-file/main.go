@@ -33,9 +33,31 @@ type input struct {
 	WorkspaceRoots []string `json:"workspace_roots"`
 }
 
+// readFileStdinBytes is this hook's stdin bound, raised above the
+// runner's 256 KiB default because beforeReadFile is the one event whose
+// payload legitimately carries a file body.
+//
+// It must clear the extractor's own 1 MiB content cap (see
+// extract.FromFileContentInRoots) with room for JSON escaping, or the
+// payload is truncated before the extractor ever sees content it was
+// built to scan. That mismatch was a live bug: every file over ~256 KiB
+// — which includes the large lockfiles this hook most wants to inspect —
+// truncated mid-JSON and was reported as a decode error rather than
+// being scanned or skipped. Escaping a text file roughly doubles its
+// worst case (every quote, backslash, and newline becomes two bytes), so
+// 2 MiB carries a 1 MiB file even when it escapes badly.
+//
+// Content ABOVE the extractor's 1 MiB cap still arrives intact and is
+// skipped there (returns no indicators, action allowed) — the deliberate
+// latency trade-off documented on that cap, which costs ~330ms to scan a
+// full 1 MiB. Only a payload beyond 2 MiB truncates, and that now lands
+// on the mode-aware verdict.HookError path.
+const readFileStdinBytes = 2 << 20
+
 func main() {
 	hookrunner.Run(hookrunner.Opts{
-		HookName: "beforeReadFile",
+		HookName:      "beforeReadFile",
+		MaxStdinBytes: readFileStdinBytes,
 		Extract: func(_ config.Config, r io.Reader) (hookrunner.Result, error) {
 			var in input
 			if err := json.NewDecoder(r).Decode(&in); err != nil {

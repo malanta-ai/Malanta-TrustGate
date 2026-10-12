@@ -438,7 +438,19 @@ API key. If it does not, fix that before doing anything else.
   hostile env file or a 302 from a compromised endpoint would
   otherwise exfil it.
 - **Inputs are bounded.** `hookrunner` caps stdin at 256 KiB
-  (`io.LimitReader`); `verdict.Compose` caps a single event at
+  (`io.LimitReader`) by default, raised per hook via
+  `Opts.MaxStdinBytes` — `beforeReadFile` sets 2 MiB because it is the
+  one event whose payload legitimately carries a file body, and the
+  bound must clear `extract`'s own 1 MiB content cap with room for JSON
+  escaping or the extractor can never see content it was built to scan.
+  (It didn't, until 2026-10-12: a customer hit `payload: unexpected EOF`
+  reading a large JSON file, because every payload over 256 KiB
+  truncated mid-structure.) A bootstrap failure of any kind now goes
+  through `verdict.HookError`, which applies mode softening — do not
+  reintroduce an inline `Allow: !cfg.FailClosed`, which denies in warn
+  mode AND skips `finalizeDecision`, leaving no pending marker for a
+  retry to promote and no way for the user to clear the block.
+  `verdict.Compose` caps a single event at
   `maxIndicatorsPerEvent` = 500 candidate indicators and DENIES
   outright above it under `fail_closed` (not truncate-with-warning —
   truncating would let an attacker pad the front of a command with
