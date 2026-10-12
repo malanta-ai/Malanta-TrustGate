@@ -885,6 +885,61 @@ func failClosedOnProviderError(d Decision, cfg config.Config, auditStore *audit.
 	return finalizeDecision(cfg, auditStore, d, hosts)
 }
 
+// HookError builds the verdict for a failure that happened BEFORE the
+// cascade could run at all: config load, payload decode, cache open. The
+// hook has no indicator, no host, and no provider answer — only the fact
+// that it could not evaluate the action.
+//
+// It applies the mode half of failClosedOnProviderError's policy, for the
+// same reason: warn is an audit+notify posture, not an enforcement
+// boundary, so it fails OPEN with the error recorded as a warning.
+// enforce keeps cfg.FailClosed's deny, and report-only is softened by
+// finalizeDecision like every other deny.
+//
+// It deliberately does NOT carry that function's beforeSubmitPrompt
+// carve-out. A provider error is an external dependency being
+// unreachable, and blocking prompt submission over it is pure friction;
+// a payload that will not decode is an input-integrity signal, and the
+// uniform "every hook denies on malformed input under fail-closed"
+// guarantee is worth more than the prompt hook's ergonomics here. See
+// the integration suite's TestAllHooks_FailClosedOnMalformedJSON.
+//
+// Routing through finalizeDecision is the point of this function. The
+// bootstrap path used to build its verdict inline as Allow:!FailClosed,
+// which ignored the mode entirely — a decode error denied in warn mode
+// while the log labelled it "warn", and because no pending marker was
+// written there was nothing for a retry to promote, so the documented
+// deny-once-then-allow never happened and the user was stuck in a loop.
+// Mode softening belongs in one place (AGENTS.md §3); this is how the
+// bootstrap path reaches it.
+//
+// Warn deliberately does NOT get the deny-once-retry treatment here:
+// failing open immediately is both friendlier and safer than a deny the
+// user cannot clear, since a hook error is usually deterministic (the
+// same oversized payload truncates identically every time) and a retry
+// would reproduce it rather than resolve it.
+func HookError(cfg config.Config, auditStore *audit.Store, hookName string, err error) Decision {
+	d := Decision{
+		DecisionID:  NewDecisionID(),
+		HookName:    hookName,
+		Mode:        effectiveMode(cfg),
+		HelpMessage: cfg.HelpMessage,
+		Reason:      "trustgate hook error: " + err.Error(),
+	}
+	if cfg.FailClosed && d.Mode != config.ModeWarn {
+		d.Allow = false
+		d.UserReason = "TrustGate could not evaluate this action — blocked (fail-closed)"
+		return finalizeDecision(cfg, auditStore, d, nil)
+	}
+	d.Allow = true
+	reason := d.Reason
+	if cfg.FailClosed {
+		reason += " (warn mode fails open on hook errors; use enforce mode to block on them)"
+	}
+	d.Warnings = append(d.Warnings, reason)
+	return finalizeDecision(cfg, auditStore, d, nil)
+}
+
 // cachePut writes a resolved Label to the cache, choosing a TTL based on
 // whether the verdict WOULD deny (score >= MinMaliciousScoreToBlock — the
 // same predicate the cascade itself uses, so a cached "flagged" entry is

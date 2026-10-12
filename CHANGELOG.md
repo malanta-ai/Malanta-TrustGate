@@ -4,6 +4,34 @@ All notable changes to Malanta TrustGate are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] — 2026-10-12
+
+### Fixed
+
+- **A file larger than 256 KiB no longer blocks its own read.** Cursor
+  sends file contents inline, and the hook runner's stdin bound truncated
+  any larger payload mid-JSON; the resulting decode error surfaced as
+  `payload: unexpected EOF` and denied the read. Large lockfiles — the
+  files this hook most wants to inspect — were the common casualty. The
+  read-file hook now carries its own 2 MiB bound, clearing the
+  extractor's existing 1 MiB content cap with room for JSON escaping, so
+  content in that range is scanned and content above it takes the
+  extractor's documented skip-and-allow path. Every other hook keeps the
+  256 KiB default. A payload that still exceeds the bound now names the
+  size in the logged reason instead of only `unexpected EOF`.
+- **Hook errors respect the policy mode.** The bootstrap path (config
+  load, payload decode, cache open) decided allow/deny from
+  `fail_closed` alone, without consulting the mode, so an error
+  hard-denied in `warn` while the decision log labelled it `warn`. It
+  also bypassed the stage that records warn's pending marker, so the
+  documented deny-once-then-allow-on-retry never happened — retrying
+  reproduced the identical error and left no way to clear the block.
+  These failures now apply the same mode policy as a provider error:
+  `warn` fails open with the error recorded as a warning, `report-only`
+  never blocks, and `enforce` keeps the fail-closed deny. Malformed
+  input remains a deny under `fail_closed` on every hook, including
+  `beforeSubmitPrompt`.
+
 ## [0.1.3] — 2026-09-09
 
 No change to hook behavior. This release rebuilds the binaries on a Go

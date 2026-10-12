@@ -54,12 +54,17 @@ import (
 
 // maxStdinBytes caps how much hook-payload data a single subprocess will
 // even attempt to decode. Cursor's documented hook payloads are small
-// (kilobytes for the largest read-file content + envelope); 256 KiB is
+// (kilobytes of command/argument text plus the envelope); 256 KiB is
 // two orders of magnitude above any realistic value and still bounds
 // RAM / CPU exposure if Cursor — or a hostile MCP server that has
 // rewritten the payload — sends a pathological blob. Exceeding the cap
-// causes a decode error on the next byte read, which the bootstrap
-// path turns into a fail-closed verdict.
+// truncates the JSON mid-structure, which decodes as an unexpected-EOF
+// error and lands on the bootstrap-failure path.
+//
+// This is the DEFAULT. A hook whose payload legitimately carries a file
+// body raises it via Opts.MaxStdinBytes — see readFileStdinBytes in
+// cmd/trustgate-before-read-file. Keeping the default low means a hook
+// that has no reason to receive a megabyte never will.
 const maxStdinBytes = 256 << 10
 
 // utf8BOM is the 3-byte UTF-8 byte-order mark (EF BB BF). Go's encoding/json
@@ -171,6 +176,13 @@ type Result struct {
 type Opts struct {
 	HookName string
 	Extract  func(cfg config.Config, stdin io.Reader) (Result, error)
+	// MaxStdinBytes overrides the default stdin bound for hooks whose
+	// payload legitimately carries a file body. Zero means maxStdinBytes.
+	// A payload that exceeds the bound is truncated and fails to decode,
+	// so this must be set above the largest content the hook's extractor
+	// is willing to scan, or that extractor can never see its own
+	// upper range.
+	MaxStdinBytes int
 }
 
 // Run is the hook subprocess main loop. It does not return; the process
@@ -207,7 +219,11 @@ func Run(opts Opts) {
 	// running Cursor version from it before handing the bytes to Extract.
 	// The version gates ModeAsk (see config.CursorHonorsAsk) — Cursor only
 	// honors permission:"ask" from a minimum version onwards.
-	rawPayload, readErr := io.ReadAll(stripUTF8BOM(io.LimitReader(os.Stdin, maxStdinBytes)))
+	stdinCap := opts.MaxStdinBytes
+	if stdinCap <= 0 {
+		stdinCap = maxStdinBytes
+	}
+	rawPayload, readErr := io.ReadAll(stripUTF8BOM(io.LimitReader(os.Stdin, int64(stdinCap))))
 	if readErr != nil {
 		emitFail(opts.HookName, cfg, auditStore, fmt.Errorf("payload: read: %w", readErr))
 		return
@@ -216,6 +232,13 @@ func Run(opts Opts) {
 
 	res, err := opts.Extract(cfg, bytes.NewReader(rawPayload))
 	if err != nil {
+		// A payload that filled the bound exactly was almost certainly
+		// truncated by it rather than malformed at the source. Say so:
+		// "unexpected EOF" sends an operator hunting for a broken client,
+		// when the actionable fact is the size.
+		if len(rawPayload) >= stdinCap {
+			err = fmt.Errorf("exceeded the %d KiB stdin bound and was truncated (%w)", stdinCap>>10, err)
+		}
 		emitFail(opts.HookName, cfg, auditStore, fmt.Errorf("payload: %w", err))
 		return
 	}
@@ -526,21 +549,18 @@ func dispatchAuditSink(cfg config.Config, d verdict.Decision, hosts []string) {
 	auditsink.Send(cfg, d, hosts)
 }
 
-// emitFail writes the bootstrap-error verdict to stdout. Allow follows
-// FailClosed (true = deny on doubt, the default). HookName is set so
-// AsJSON emits the correct per-event wire shape — without this, a
-// fail-closed bootstrap error on the prompt hook would emit the
-// {permission, user_message, agent_message} shape that Cursor uses for
-// shell / read-file / MCP and silently fail-open instead. auditStore may
-// be nil (e.g. when config itself failed to load, before we'd trust any
-// of its paths) — verdict.RecordDecision treats a nil store as a no-op.
+// emitFail writes the bootstrap-error verdict to stdout. The allow/deny
+// decision and its logging belong to verdict.HookError, which applies the
+// same mode policy as a provider error (warn and beforeSubmitPrompt fail
+// open; enforce honors FailClosed; report-only is softened downstream).
+// HookName is passed through so AsJSON emits the correct per-event wire
+// shape — without it, a fail-closed bootstrap error on the prompt hook
+// would emit the {permission, user_message, agent_message} shape that
+// Cursor uses for shell / read-file / MCP and silently fail-open instead.
+// auditStore may be nil (e.g. when config itself failed to load, before
+// we'd trust any of its paths); the logging path treats nil as a no-op.
 func emitFail(hookName string, cfg config.Config, auditStore *audit.Store, err error) {
-	d := verdict.Decision{
-		Allow:    !cfg.FailClosed,
-		Reason:   "trustgate hook error: " + err.Error(),
-		HookName: hookName,
-	}
-	verdict.RecordDecision(cfg, auditStore, &d, nil)
+	d := verdict.HookError(cfg, auditStore, hookName, err)
 	writeVerdict(d.AsJSON())
 	dispatchAuditSink(cfg, d, nil)
 }
